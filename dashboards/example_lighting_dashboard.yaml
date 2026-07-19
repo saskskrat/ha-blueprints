@@ -1,0 +1,16 @@
+title: Lighting
+views:
+  - title: Home
+    path: home
+    cards:
+      - type: entities
+        title: Example Room
+        entities:
+          - light.example_room
+          - scene.example_room_normal
+          - scene.example_room_off
+      - type: entities
+        title: Entry
+        entities:
+          - light.example_entry
+          - binary_sensor.example_motion

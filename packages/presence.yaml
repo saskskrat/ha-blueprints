@@ -1,0 +1,8 @@
+# Package: presence
+# Bundles helpers + automations related to who's home.
+automation: !include_dir_merge_list ../automations/presence
+
+input_boolean:
+  guest_mode:
+    name: Guest mode
+    icon: mdi:account-multiple

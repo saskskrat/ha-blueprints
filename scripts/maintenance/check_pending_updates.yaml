@@ -1,0 +1,15 @@
+# Summarizes any `update.*` entities currently reporting an update is available
+# and sends a single notification listing them.
+check_pending_updates_example:
+  alias: "Maintenance: notify on pending updates"
+  sequence:
+    - variables:
+        pending: >
+          {{ states.update | selectattr('state', 'eq', 'on') | map(attribute='name') | list }}
+    - condition: template
+      value_template: "{{ pending | length > 0 }}"
+    - service: notify.example_mobile_app
+      data:
+        title: "Home Assistant updates available"
+        message: "{{ pending | join(', ') }}"
+  mode: single

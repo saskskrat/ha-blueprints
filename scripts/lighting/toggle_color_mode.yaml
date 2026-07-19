@@ -1,0 +1,7 @@
+toggle_color_mode_example:
+  alias: "Toggle color mode (remember previous)"
+  sequence:
+    - service: light.toggle
+      target:
+        entity_id: light.example_bulbs
+  mode: single

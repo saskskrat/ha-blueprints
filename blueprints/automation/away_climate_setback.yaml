@@ -1,0 +1,41 @@
+blueprint:
+  name: Climate setback when a person leaves
+  description: >
+    Set a thermostat to an away temperature when a chosen person (or the last
+    of several) leaves home.
+  domain: automation
+  input:
+    person_entity:
+      name: Person to watch
+      selector:
+        entity:
+          domain: person
+    climate_entity:
+      name: Thermostat
+      selector:
+        entity:
+          domain: climate
+    away_temperature:
+      name: Away temperature
+      default: 62
+      selector:
+        number:
+          min: 40
+          max: 90
+          unit_of_measurement: "°"
+
+trigger:
+  - platform: state
+    entity_id: !input person_entity
+    to: "not_home"
+
+condition: []
+
+action:
+  - service: climate.set_temperature
+    target:
+      entity_id: !input climate_entity
+    data:
+      temperature: !input away_temperature
+
+mode: single

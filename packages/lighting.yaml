@@ -1,0 +1,3 @@
+# Package: lighting
+automation: !include_dir_merge_list ../automations/lighting
+script: !include_dir_merge_named ../scripts/lighting

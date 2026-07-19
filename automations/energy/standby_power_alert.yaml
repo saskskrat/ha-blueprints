@@ -1,0 +1,19 @@
+# Alert if a device is drawing standby power above a threshold for a while —
+# useful for catching a device stuck "on" or a phantom load.
+- id: energy_standby_power_alert
+  alias: "Energy: unexpected standby draw"
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.example_power
+      above: 5
+      for:
+        minutes: 30
+  condition: []
+  action:
+    - service: notify.example_mobile_app
+      data:
+        title: "Unexpected power draw"
+        message: >-
+          {{ trigger.to_state.attributes.friendly_name }} has drawn over 5W
+          for 30+ minutes.
+  mode: single

@@ -1,0 +1,50 @@
+blueprint:
+  name: Notify when an entity reaches a state
+  description: >
+    Generic "watch an entity, fire a notification when it hits a given state"
+    automation — covers presence alerts, unavailable-device alerts, door/window
+    left-open alerts, etc. with one blueprint.
+  domain: automation
+  input:
+    watched_entity:
+      name: Entity to watch
+      selector:
+        entity: {}
+    target_state:
+      name: State to trigger on
+      selector:
+        text: {}
+    for_minutes:
+      name: Minimum time in that state before notifying (optional)
+      default: 0
+      selector:
+        number:
+          min: 0
+          max: 180
+          unit_of_measurement: minutes
+    notify_service:
+      name: Notify service
+      default: notify.notify
+      selector:
+        text: {}
+    message:
+      name: Message
+      selector:
+        text:
+          multiline: true
+
+trigger:
+  - platform: state
+    entity_id: !input watched_entity
+    to: !input target_state
+    for:
+      minutes: !input for_minutes
+
+condition: []
+
+action:
+  - service: !input notify_service
+    data:
+      message: !input message
+
+mode: single

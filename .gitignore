@@ -1,0 +1,7 @@
+secrets.yaml
+*.secrets.yaml
+.storage/
+.cloud/
+*.db
+*.db-*
+.DS_Store

@@ -1,0 +1,8 @@
+# Package: maintenance
+script: !include_dir_merge_named ../scripts/maintenance
+
+input_datetime:
+  last_manual_backup_check:
+    name: Last manual backup check
+    has_date: true
+    has_time: true

@@ -1,0 +1,27 @@
+# Generic "last one out" automation: fires only when ALL tracked people leave,
+# not on every individual departure.
+- id: presence_everyone_leaves_setback
+  alias: "Presence: everyone left, turn things off"
+  trigger:
+    - platform: state
+      entity_id:
+        - person.example_person
+        - person.example_person_2
+      to: "not_home"
+  condition:
+    - condition: state
+      entity_id: person.example_person
+      state: "not_home"
+    - condition: state
+      entity_id: person.example_person_2
+      state: "not_home"
+  action:
+    - service: light.turn_off
+      target:
+        entity_id: all
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.example_thermostat
+      data:
+        temperature: 62
+  mode: single

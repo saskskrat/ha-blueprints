@@ -1,0 +1,42 @@
+blueprint:
+  name: Turn off light N minutes after motion clears
+  description: >
+    Pick any motion/occupancy binary_sensor and any light/switch target; turns
+    the target off a configurable number of minutes after motion stops.
+  domain: automation
+  input:
+    motion_entity:
+      name: Motion/occupancy sensor
+      selector:
+        entity:
+          domain: binary_sensor
+    target_light:
+      name: Light(s) to turn off
+      selector:
+        target:
+          entity:
+            domain: light
+    delay_minutes:
+      name: Delay (minutes)
+      default: 10
+      selector:
+        number:
+          min: 1
+          max: 120
+          unit_of_measurement: minutes
+
+trigger:
+  - platform: state
+    entity_id: !input motion_entity
+    from: "on"
+    to: "off"
+    for:
+      minutes: !input delay_minutes
+
+condition: []
+
+action:
+  - service: light.turn_off
+    target: !input target_light
+
+mode: single

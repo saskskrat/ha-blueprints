@@ -1,0 +1,32 @@
+# Plain (non-blueprint) version of motion lighting for a single room — see
+# blueprints/automation/motion_light_off.yaml for the reusable/parameterized version.
+- id: lighting_motion_on_off_example
+  alias: "Lighting: motion turns light on, off after it clears"
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.example_motion
+      to: "on"
+    - platform: state
+      entity_id: binary_sensor.example_motion
+      from: "on"
+      to: "off"
+      for:
+        minutes: 10
+  condition: []
+  action:
+    - choose:
+        - conditions:
+            - condition: trigger
+              id: "0"
+          sequence:
+            - service: light.turn_on
+              target:
+                entity_id: light.example_room
+        - conditions:
+            - condition: trigger
+              id: "1"
+          sequence:
+            - service: light.turn_off
+              target:
+                entity_id: light.example_room
+  mode: single

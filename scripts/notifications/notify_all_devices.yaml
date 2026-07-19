@@ -1,0 +1,19 @@
+notify_all_devices_example:
+  alias: "Notify: broadcast to all mobile devices"
+  fields:
+    title:
+      description: Notification title
+      example: "Heads up"
+    message:
+      description: Notification body
+      example: "Garage door left open."
+  sequence:
+    - service: notify.example_mobile_app
+      data:
+        title: "{{ title }}"
+        message: "{{ message }}"
+    - service: notify.example_mobile_app_2
+      data:
+        title: "{{ title }}"
+        message: "{{ message }}"
+  mode: parallel
