@@ -1,0 +1,26 @@
+{
+  "ignoreLabel": "dashboard_ignore",
+  "hiddenSensor": "sensor.room_panel_hidden_items",
+  "toggleScript": "script.room_panel_toggle_hidden",
+  "hiddenListKey": "scenes",
+  "showHiddenBoolean": "input_boolean.room_panel_show_hidden_scenes",
+  "mediaExclude": [],
+  "kelvin": { "warm": 2700, "daylight": 4000, "cool": 6000 },
+  "rooms": [
+    {
+      "area": "example_living_room",
+      "kind": "color",
+      "lightGroup": "light.example_living_room_lights",
+      "modeHelper": "input_select.example_living_room_light_mode",
+      "expanded": true
+    },
+    {
+      "area": "example_kitchen",
+      "kind": "color",
+      "lightGroup": "light.example_kitchen_lights",
+      "modeHelper": "input_select.example_kitchen_light_mode"
+    },
+    { "area": "example_backyard", "kind": "onoff" },
+    { "area": "example_office", "kind": "none" }
+  ]
+}
