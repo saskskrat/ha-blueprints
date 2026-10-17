@@ -1,0 +1,391 @@
+{
+  "title": "System",
+  "path": "system",
+  "icon": "mdi:server-outline",
+  "type": "sections",
+  "max_columns": 3,
+  "sections": [
+    {
+      "type": "grid",
+      "cards": [
+        {
+          "type": "custom:expander-card",
+          "title-card": {
+            "type": "heading",
+            "heading": "Backups",
+            "icon": "mdi:backup-restore"
+          },
+          "title-card-clickable": true,
+          "icon": "mdi:chevron-down",
+          "expanded": true,
+          "storage-id": "__P__backups",
+          "padding": "0",
+          "clear": true,
+          "grid_options": {
+            "columns": "full"
+          },
+          "cards": [
+            {
+              "type": "custom:auto-entities",
+              "card": {
+                "type": "grid",
+                "columns": 1,
+                "square": false
+              },
+              "card_param": "cards",
+              "filter": {
+                "include": [
+                  {
+                    "integration": "backup",
+                    "domain": "sensor",
+                    "options": {
+                      "type": "tile"
+                    }
+                  }
+                ],
+                "exclude": [
+                  {
+                    "label": "__IGNORE__"
+                  }
+                ]
+              },
+              "sort": {
+                "method": "name"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "grid",
+      "cards": [
+        {
+          "type": "custom:expander-card",
+          "title-card": {
+            "type": "heading",
+            "heading": "Updates available",
+            "icon": "mdi:update"
+          },
+          "title-card-clickable": true,
+          "icon": "mdi:chevron-down",
+          "expanded": true,
+          "storage-id": "__P__updates",
+          "padding": "0",
+          "clear": true,
+          "grid_options": {
+            "columns": "full"
+          },
+          "cards": [
+            {
+              "type": "custom:auto-entities",
+              "card": {
+                "type": "grid",
+                "columns": 1,
+                "square": false
+              },
+              "card_param": "cards",
+              "filter": {
+                "include": [
+                  {
+                    "domain": "update",
+                    "state": "on",
+                    "options": {
+                      "type": "tile",
+                      "features": [
+                        {
+                          "type": "update-actions"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "exclude": [
+                  {
+                    "label": "__IGNORE__"
+                  }
+                ]
+              },
+              "sort": {
+                "method": "name"
+              },
+              "else": {
+                "type": "markdown",
+                "content": "Everything is up to date."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "grid",
+      "cards": [
+        {
+          "type": "custom:expander-card",
+          "title-card": {
+            "type": "heading",
+            "heading": "Unavailable entities",
+            "icon": "mdi:alert-circle-outline",
+            "badges": [
+              {
+                "type": "entity",
+                "entity": "input_boolean.__P__show_hidden_unavailable",
+                "show_state": false,
+                "show_icon": true,
+                "icon": "mdi:eye-off-outline",
+                "tap_action": {
+                  "action": "toggle"
+                },
+                "visibility": [
+                  {
+                    "condition": "state",
+                    "entity": "input_boolean.__P__show_hidden_unavailable",
+                    "state": "off"
+                  }
+                ]
+              },
+              {
+                "type": "entity",
+                "entity": "input_boolean.__P__show_hidden_unavailable",
+                "show_state": false,
+                "show_icon": true,
+                "icon": "mdi:eye",
+                "color": "primary",
+                "tap_action": {
+                  "action": "toggle"
+                },
+                "visibility": [
+                  {
+                    "condition": "state",
+                    "entity": "input_boolean.__P__show_hidden_unavailable",
+                    "state": "on"
+                  }
+                ]
+              }
+            ]
+          },
+          "title-card-clickable": false,
+          "icon": "mdi:chevron-down",
+          "expanded": false,
+          "storage-id": "__P__unavailable",
+          "padding": "0",
+          "clear": true,
+          "grid_options": {
+            "columns": "full"
+          },
+          "cards": [
+            {
+              "type": "custom:auto-entities",
+              "card": {
+                "type": "grid",
+                "columns": 1,
+                "square": false
+              },
+              "card_param": "cards",
+              "filter": {
+                "include": [
+                  {
+                    "state": "unavailable",
+                    "options": {
+                      "type": "custom:button-card",
+                      "show_label": true,
+                      "triggers_update": [
+                        "sensor.__P__hidden_items",
+                        "input_boolean.__P__show_hidden_unavailable"
+                      ],
+                      "label": "[[[ return entity.entity_id.split('.')[0] + ' · since ' + new Date(entity.last_changed).toLocaleString([], {weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'}); ]]]",
+                      "custom_fields": {
+                        "eye": {
+                          "card": {
+                            "type": "custom:button-card",
+                            "variables": {
+                              "eid": "this.entity_id"
+                            },
+                            "triggers_update": [
+                              "sensor.__P__hidden_items",
+                              "input_boolean.__P__show_hidden_unavailable"
+                            ],
+                            "show_name": false,
+                            "icon": "[[[ const H=(((states['sensor.__P__hidden_items']||{}).attributes||{}).hidden)||{}; return (H['unavailable']||[]).includes(variables.eid) ? 'mdi:eye-off' : 'mdi:eye-outline'; ]]]",
+                            "tap_action": {
+                              "action": "perform-action",
+                              "perform_action": "script.__P__toggle_hidden",
+                              "data": {
+                                "list": "unavailable",
+                                "entity_id": "this.entity_id"
+                              }
+                            },
+                            "hold_action": {
+                              "action": "none"
+                            },
+                            "styles": {
+                              "card": [
+                                {
+                                  "background": "none"
+                                },
+                                {
+                                  "box-shadow": "none"
+                                },
+                                {
+                                  "border": "none"
+                                },
+                                {
+                                  "padding": "12px"
+                                },
+                                {
+                                  "width": "48px"
+                                },
+                                {
+                                  "height": "48px"
+                                },
+                                {
+                                  "border-radius": "24px"
+                                },
+                                {
+                                  "display": "[[[ return (states['input_boolean.__P__show_hidden_unavailable']||{}).state==='on' ? 'block' : 'none'; ]]]"
+                                }
+                              ],
+                              "icon": [
+                                {
+                                  "width": "24px"
+                                },
+                                {
+                                  "color": "var(--secondary-text-color)"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      },
+                      "tap_action": {
+                        "action": "more-info"
+                      },
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "styles": {
+                        "grid": [
+                          {
+                            "grid-template-areas": "\"i n eye\" \"i l eye\""
+                          },
+                          {
+                            "grid-template-columns": "[[[ return (states['input_boolean.__P__show_hidden_unavailable']||{}).state==='on' ? '40px 1fr 48px' : '40px 1fr 0px'; ]]]"
+                          },
+                          {
+                            "grid-template-rows": "auto auto"
+                          },
+                          {
+                            "column-gap": "16px"
+                          },
+                          {
+                            "align-items": "center"
+                          }
+                        ],
+                        "card": [
+                          {
+                            "padding": "8px 24px 8px 16px"
+                          },
+                          {
+                            "min-height": "72px"
+                          },
+                          {
+                            "background": "none"
+                          },
+                          {
+                            "box-shadow": "none"
+                          },
+                          {
+                            "border": "none"
+                          },
+                          {
+                            "border-radius": "0"
+                          },
+                          {
+                            "display": "[[[ const H=(((states['sensor.__P__hidden_items']||{}).attributes||{}).hidden)||{}; const s=(states['input_boolean.__P__show_hidden_unavailable']||{}).state==='on'; return ((H['unavailable']||[]).includes(entity.entity_id) && !s) ? 'none' : 'block'; ]]]"
+                          },
+                          {
+                            "opacity": "[[[ const H=(((states['sensor.__P__hidden_items']||{}).attributes||{}).hidden)||{}; return (H['unavailable']||[]).includes(entity.entity_id) ? '0.38' : '1'; ]]]"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "width": "24px"
+                          },
+                          {
+                            "color": "var(--secondary-text-color)"
+                          }
+                        ],
+                        "name": [
+                          {
+                            "justify-self": "start"
+                          },
+                          {
+                            "text-align": "left"
+                          },
+                          {
+                            "white-space": "normal"
+                          },
+                          {
+                            "font-size": "16px"
+                          },
+                          {
+                            "line-height": "24px"
+                          },
+                          {
+                            "font-weight": "400"
+                          },
+                          {
+                            "color": "var(--primary-text-color)"
+                          }
+                        ],
+                        "label": [
+                          {
+                            "justify-self": "start"
+                          },
+                          {
+                            "text-align": "left"
+                          },
+                          {
+                            "font-size": "14px"
+                          },
+                          {
+                            "line-height": "20px"
+                          },
+                          {
+                            "color": "var(--secondary-text-color)"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "exclude": [
+                  {
+                    "domain": "button"
+                  },
+                  {
+                    "entity_category": "diagnostic"
+                  },
+                  {
+                    "entity_category": "config"
+                  },
+                  {
+                    "label": "__IGNORE__"
+                  }
+                ]
+              },
+              "sort": {
+                "method": "domain"
+              },
+              "else": {
+                "type": "markdown",
+                "content": "No unavailable entities."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

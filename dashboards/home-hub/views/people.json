@@ -1,0 +1,600 @@
+{
+  "title": "People",
+  "path": "people",
+  "icon": "mdi:account-group-outline",
+  "type": "sections",
+  "max_columns": 3,
+  "sections": [
+    {
+      "type": "grid",
+      "cards": [
+        {
+          "type": "custom:expander-card",
+          "title-card": {
+            "type": "heading",
+            "heading": "People",
+            "icon": "mdi:account-multiple-outline",
+            "badges": [
+              {
+                "type": "entity",
+                "entity": "input_boolean.__P__show_hidden_people",
+                "show_state": false,
+                "show_icon": true,
+                "icon": "mdi:eye-off-outline",
+                "tap_action": {
+                  "action": "toggle"
+                },
+                "visibility": [
+                  {
+                    "condition": "state",
+                    "entity": "input_boolean.__P__show_hidden_people",
+                    "state": "off"
+                  }
+                ]
+              },
+              {
+                "type": "entity",
+                "entity": "input_boolean.__P__show_hidden_people",
+                "show_state": false,
+                "show_icon": true,
+                "icon": "mdi:eye",
+                "color": "primary",
+                "tap_action": {
+                  "action": "toggle"
+                },
+                "visibility": [
+                  {
+                    "condition": "state",
+                    "entity": "input_boolean.__P__show_hidden_people",
+                    "state": "on"
+                  }
+                ]
+              }
+            ]
+          },
+          "title-card-clickable": false,
+          "icon": "mdi:chevron-down",
+          "expanded": true,
+          "storage-id": "__P__people",
+          "padding": "0",
+          "clear": true,
+          "grid_options": {
+            "columns": "full"
+          },
+          "cards": [
+            {
+              "type": "custom:auto-entities",
+              "card": {
+                "type": "grid",
+                "columns": 1,
+                "square": false
+              },
+              "card_param": "cards",
+              "filter": {
+                "include": [
+                  {
+                    "domain": "person",
+                    "options": {
+                      "type": "custom:button-card",
+                      "show_label": true,
+                      "triggers_update": [
+                        "sensor.__P__hidden_items",
+                        "input_boolean.__P__show_hidden_people"
+                      ],
+                      "icon": "mdi:account",
+                      "label": "[[[ return 'Since ' + new Date(entity.last_changed).toLocaleString([], {weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'}); ]]]",
+                      "custom_fields": {
+                        "eye": {
+                          "card": {
+                            "type": "custom:button-card",
+                            "variables": {
+                              "eid": "this.entity_id"
+                            },
+                            "triggers_update": [
+                              "sensor.__P__hidden_items",
+                              "input_boolean.__P__show_hidden_people"
+                            ],
+                            "show_name": false,
+                            "icon": "[[[ const H=(((states['sensor.__P__hidden_items']||{}).attributes||{}).hidden)||{}; return (H['people']||[]).includes(variables.eid) ? 'mdi:eye-off' : 'mdi:eye-outline'; ]]]",
+                            "tap_action": {
+                              "action": "perform-action",
+                              "perform_action": "script.__P__toggle_hidden",
+                              "data": {
+                                "list": "people",
+                                "entity_id": "this.entity_id"
+                              }
+                            },
+                            "hold_action": {
+                              "action": "none"
+                            },
+                            "styles": {
+                              "card": [
+                                {
+                                  "background": "none"
+                                },
+                                {
+                                  "box-shadow": "none"
+                                },
+                                {
+                                  "border": "none"
+                                },
+                                {
+                                  "padding": "12px"
+                                },
+                                {
+                                  "width": "48px"
+                                },
+                                {
+                                  "height": "48px"
+                                },
+                                {
+                                  "border-radius": "24px"
+                                },
+                                {
+                                  "display": "[[[ return (states['input_boolean.__P__show_hidden_people']||{}).state==='on' ? 'block' : 'none'; ]]]"
+                                }
+                              ],
+                              "icon": [
+                                {
+                                  "width": "24px"
+                                },
+                                {
+                                  "color": "var(--secondary-text-color)"
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        "st": "[[[ const s = entity.state; return s === 'home' ? 'Home' : (s === 'not_home' ? 'Away' : s.charAt(0).toUpperCase() + s.slice(1)); ]]]"
+                      },
+                      "tap_action": {
+                        "action": "more-info"
+                      },
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "styles": {
+                        "grid": [
+                          {
+                            "grid-template-areas": "\"i n eye st\" \"i l eye st\""
+                          },
+                          {
+                            "grid-template-columns": "[[[ return (states['input_boolean.__P__show_hidden_people']||{}).state==='on' ? '40px 1fr 48px auto' : '40px 1fr 0px auto'; ]]]"
+                          },
+                          {
+                            "grid-template-rows": "auto auto"
+                          },
+                          {
+                            "column-gap": "16px"
+                          },
+                          {
+                            "align-items": "center"
+                          }
+                        ],
+                        "card": [
+                          {
+                            "padding": "8px 24px 8px 16px"
+                          },
+                          {
+                            "min-height": "72px"
+                          },
+                          {
+                            "background": "none"
+                          },
+                          {
+                            "box-shadow": "none"
+                          },
+                          {
+                            "border": "none"
+                          },
+                          {
+                            "border-radius": "0"
+                          },
+                          {
+                            "display": "[[[ const H=(((states['sensor.__P__hidden_items']||{}).attributes||{}).hidden)||{}; const s=(states['input_boolean.__P__show_hidden_people']||{}).state==='on'; return ((H['people']||[]).includes(entity.entity_id) && !s) ? 'none' : 'block'; ]]]"
+                          },
+                          {
+                            "opacity": "[[[ const H=(((states['sensor.__P__hidden_items']||{}).attributes||{}).hidden)||{}; return (H['people']||[]).includes(entity.entity_id) ? '0.38' : '1'; ]]]"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "width": "24px"
+                          },
+                          {
+                            "color": "var(--secondary-text-color)"
+                          }
+                        ],
+                        "name": [
+                          {
+                            "justify-self": "start"
+                          },
+                          {
+                            "text-align": "left"
+                          },
+                          {
+                            "white-space": "normal"
+                          },
+                          {
+                            "font-size": "16px"
+                          },
+                          {
+                            "line-height": "24px"
+                          },
+                          {
+                            "font-weight": "400"
+                          },
+                          {
+                            "color": "var(--primary-text-color)"
+                          }
+                        ],
+                        "label": [
+                          {
+                            "justify-self": "start"
+                          },
+                          {
+                            "text-align": "left"
+                          },
+                          {
+                            "font-size": "14px"
+                          },
+                          {
+                            "line-height": "20px"
+                          },
+                          {
+                            "color": "var(--secondary-text-color)"
+                          }
+                        ],
+                        "entity_picture": [
+                          {
+                            "border-radius": "50%"
+                          },
+                          {
+                            "width": "40px"
+                          },
+                          {
+                            "height": "40px"
+                          },
+                          {
+                            "object-fit": "cover"
+                          }
+                        ],
+                        "custom_fields": {
+                          "st": [
+                            {
+                              "font-size": "14px"
+                            },
+                            {
+                              "color": "var(--secondary-text-color)"
+                            }
+                          ]
+                        }
+                      },
+                      "show_entity_picture": true
+                    }
+                  }
+                ],
+                "exclude": [
+                  {
+                    "label": "__IGNORE__"
+                  }
+                ]
+              },
+              "sort": {
+                "method": "name"
+              }
+            }
+          ]
+        },
+        {
+          "type": "custom:expander-card",
+          "title-card": {
+            "type": "heading",
+            "heading": "Phones & watches",
+            "icon": "mdi:cellphone-marker",
+            "badges": [
+              {
+                "type": "entity",
+                "entity": "input_boolean.__P__show_hidden_trackers",
+                "show_state": false,
+                "show_icon": true,
+                "icon": "mdi:eye-off-outline",
+                "tap_action": {
+                  "action": "toggle"
+                },
+                "visibility": [
+                  {
+                    "condition": "state",
+                    "entity": "input_boolean.__P__show_hidden_trackers",
+                    "state": "off"
+                  }
+                ]
+              },
+              {
+                "type": "entity",
+                "entity": "input_boolean.__P__show_hidden_trackers",
+                "show_state": false,
+                "show_icon": true,
+                "icon": "mdi:eye",
+                "color": "primary",
+                "tap_action": {
+                  "action": "toggle"
+                },
+                "visibility": [
+                  {
+                    "condition": "state",
+                    "entity": "input_boolean.__P__show_hidden_trackers",
+                    "state": "on"
+                  }
+                ]
+              }
+            ]
+          },
+          "title-card-clickable": false,
+          "icon": "mdi:chevron-down",
+          "expanded": true,
+          "storage-id": "__P__trackers",
+          "padding": "0",
+          "clear": true,
+          "grid_options": {
+            "columns": "full"
+          },
+          "cards": [
+            {
+              "type": "custom:auto-entities",
+              "card": {
+                "type": "grid",
+                "columns": 1,
+                "square": false
+              },
+              "card_param": "cards",
+              "filter": {
+                "include": [
+                  {
+                    "integration": "mobile_app",
+                    "domain": "device_tracker",
+                    "options": {
+                      "type": "custom:button-card",
+                      "show_label": true,
+                      "triggers_update": [
+                        "sensor.__P__hidden_items",
+                        "input_boolean.__P__show_hidden_trackers"
+                      ],
+                      "icon": "[[[ return entity.state === 'home' ? 'mdi:home-account' : (entity.state === 'not_home' ? 'mdi:account-arrow-right' : 'mdi:account-question'); ]]]",
+                      "label": "[[[ return 'Changed: ' + new Date(entity.last_changed).toLocaleString([], {weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'}); ]]]",
+                      "custom_fields": {
+                        "eye": {
+                          "card": {
+                            "type": "custom:button-card",
+                            "variables": {
+                              "eid": "this.entity_id"
+                            },
+                            "triggers_update": [
+                              "sensor.__P__hidden_items",
+                              "input_boolean.__P__show_hidden_trackers"
+                            ],
+                            "show_name": false,
+                            "icon": "[[[ const H=(((states['sensor.__P__hidden_items']||{}).attributes||{}).hidden)||{}; return (H['trackers']||[]).includes(variables.eid) ? 'mdi:eye-off' : 'mdi:eye-outline'; ]]]",
+                            "tap_action": {
+                              "action": "perform-action",
+                              "perform_action": "script.__P__toggle_hidden",
+                              "data": {
+                                "list": "trackers",
+                                "entity_id": "this.entity_id"
+                              }
+                            },
+                            "hold_action": {
+                              "action": "none"
+                            },
+                            "styles": {
+                              "card": [
+                                {
+                                  "background": "none"
+                                },
+                                {
+                                  "box-shadow": "none"
+                                },
+                                {
+                                  "border": "none"
+                                },
+                                {
+                                  "padding": "12px"
+                                },
+                                {
+                                  "width": "48px"
+                                },
+                                {
+                                  "height": "48px"
+                                },
+                                {
+                                  "border-radius": "24px"
+                                },
+                                {
+                                  "display": "[[[ return (states['input_boolean.__P__show_hidden_trackers']||{}).state==='on' ? 'block' : 'none'; ]]]"
+                                }
+                              ],
+                              "icon": [
+                                {
+                                  "width": "24px"
+                                },
+                                {
+                                  "color": "var(--secondary-text-color)"
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        "st": "[[[ const s = entity.state; return s === 'home' ? 'Home' : (s === 'not_home' ? 'Away' : s.charAt(0).toUpperCase() + s.slice(1)); ]]]"
+                      },
+                      "tap_action": {
+                        "action": "more-info"
+                      },
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "styles": {
+                        "grid": [
+                          {
+                            "grid-template-areas": "\"i n eye st\" \"i l eye st\""
+                          },
+                          {
+                            "grid-template-columns": "[[[ return (states['input_boolean.__P__show_hidden_trackers']||{}).state==='on' ? '40px 1fr 48px auto' : '40px 1fr 0px auto'; ]]]"
+                          },
+                          {
+                            "grid-template-rows": "auto auto"
+                          },
+                          {
+                            "column-gap": "16px"
+                          },
+                          {
+                            "align-items": "center"
+                          }
+                        ],
+                        "card": [
+                          {
+                            "padding": "8px 24px 8px 16px"
+                          },
+                          {
+                            "min-height": "72px"
+                          },
+                          {
+                            "background": "none"
+                          },
+                          {
+                            "box-shadow": "none"
+                          },
+                          {
+                            "border": "none"
+                          },
+                          {
+                            "border-radius": "0"
+                          },
+                          {
+                            "display": "[[[ const H=(((states['sensor.__P__hidden_items']||{}).attributes||{}).hidden)||{}; const s=(states['input_boolean.__P__show_hidden_trackers']||{}).state==='on'; return ((H['trackers']||[]).includes(entity.entity_id) && !s) ? 'none' : 'block'; ]]]"
+                          },
+                          {
+                            "opacity": "[[[ const H=(((states['sensor.__P__hidden_items']||{}).attributes||{}).hidden)||{}; return (H['trackers']||[]).includes(entity.entity_id) ? '0.38' : '1'; ]]]"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "width": "24px"
+                          },
+                          {
+                            "color": "[[[ return entity.state === 'home' ? 'var(--primary-color)' : 'var(--secondary-text-color)'; ]]]"
+                          }
+                        ],
+                        "name": [
+                          {
+                            "justify-self": "start"
+                          },
+                          {
+                            "text-align": "left"
+                          },
+                          {
+                            "white-space": "normal"
+                          },
+                          {
+                            "font-size": "16px"
+                          },
+                          {
+                            "line-height": "24px"
+                          },
+                          {
+                            "font-weight": "400"
+                          },
+                          {
+                            "color": "var(--primary-text-color)"
+                          }
+                        ],
+                        "label": [
+                          {
+                            "justify-self": "start"
+                          },
+                          {
+                            "text-align": "left"
+                          },
+                          {
+                            "font-size": "14px"
+                          },
+                          {
+                            "line-height": "20px"
+                          },
+                          {
+                            "color": "var(--secondary-text-color)"
+                          }
+                        ],
+                        "custom_fields": {
+                          "st": [
+                            {
+                              "font-size": "14px"
+                            },
+                            {
+                              "color": "var(--secondary-text-color)"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                ],
+                "exclude": [
+                  {
+                    "label": "__IGNORE__"
+                  }
+                ]
+              },
+              "sort": {
+                "method": "name"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "grid",
+      "column_span": 2,
+      "cards": [
+        {
+          "type": "custom:expander-card",
+          "title-card": {
+            "type": "heading",
+            "heading": "Map",
+            "icon": "mdi:map-marker-outline"
+          },
+          "title-card-clickable": true,
+          "icon": "mdi:chevron-down",
+          "expanded": true,
+          "storage-id": "__P__map",
+          "padding": "0",
+          "clear": true,
+          "grid_options": {
+            "columns": "full"
+          },
+          "cards": [
+            {
+              "type": "custom:auto-entities",
+              "card": {
+                "type": "map",
+                "default_zoom": 12,
+                "hours_to_show": 12,
+                "aspect_ratio": "4:3"
+              },
+              "filter": {
+                "include": [
+                  {
+                    "domain": "person"
+                  },
+                  {
+                    "domain": "zone"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

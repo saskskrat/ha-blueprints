@@ -1,0 +1,80 @@
+# Package: home_hub
+# Supporting pieces for dashboards/home-hub: "show hidden" switches, a toggle script,
+# and a sensor that remembers what you hid. Hiding is stored in Home Assistant (not
+# the browser), so every phone, tablet and wall panel sees the same list.
+#
+# Names use the default prefix `hub_`. If you change `prefix` in hub.json, change it
+# here too. Every name below must match what build.ts generates.
+
+input_boolean:
+  hub_show_hidden_room_scenes:
+    name: Hub - show hidden room scenes
+    icon: mdi:eye
+  hub_show_hidden_players:
+    name: Hub - show hidden players
+    icon: mdi:eye
+  hub_show_hidden_people:
+    name: Hub - show hidden people
+    icon: mdi:eye
+  hub_show_hidden_trackers:
+    name: Hub - show hidden trackers
+    icon: mdi:eye
+  hub_show_hidden_automations:
+    name: Hub - show hidden automations
+    icon: mdi:eye
+  hub_show_hidden_scenes:
+    name: Hub - show hidden scenes
+    icon: mdi:eye
+  hub_show_hidden_scripts:
+    name: Hub - show hidden scripts
+    icon: mdi:eye
+  hub_show_hidden_unavailable:
+    name: Hub - show hidden unavailable
+    icon: mdi:eye
+
+script:
+  hub_toggle_hidden:
+    alias: Hub - toggle hidden item
+    description: >-
+      Adds the entity to the named hidden list, or removes it if it is already
+      there. The dashboard's eye buttons call this.
+    mode: queued
+    icon: mdi:eye-off
+    fields:
+      entity_id:
+        name: Entity
+        required: true
+        selector:
+          entity: {}
+      list:
+        name: List
+        description: Hidden-list key, e.g. people, players, room_scenes (any name works)
+        required: true
+        selector:
+          text:
+    sequence:
+      - event: hub_toggle_hidden
+        event_data:
+          entity_id: "{{ entity_id }}"
+          list: "{{ list }}"
+
+template:
+  - triggers:
+      - trigger: event
+        event_type: hub_toggle_hidden
+    sensor:
+      - name: Hub hidden items
+        unique_id: hub_hidden_items
+        device_class: timestamp
+        # State only records when the list last changed; the data is in `hidden`.
+        state: "{{ now().isoformat() }}"
+        attributes:
+          # {list-name: [entity_id, ...]}. Toggles the event's entity in its list.
+          hidden: >-
+            {% set cur = this.attributes.hidden
+               if this is not none and this.attributes.hidden is defined else {} %}
+            {% set k = trigger.event.data.list %}
+            {% set e = trigger.event.data.entity_id %}
+            {% set lst = cur.get(k, []) %}
+            {% set new = (lst | reject('eq', e) | list) if e in lst else (lst + [e]) %}
+            {{ dict(cur.items() | list + [(k, new)]) }}

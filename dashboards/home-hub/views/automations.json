@@ -1,0 +1,786 @@
+{
+  "title": "Automations",
+  "path": "automations",
+  "icon": "mdi:robot-outline",
+  "type": "sections",
+  "max_columns": 3,
+  "sections": [
+    {
+      "type": "grid",
+      "column_span": 2,
+      "cards": [
+        {
+          "type": "custom:expander-card",
+          "title-card": {
+            "type": "heading",
+            "heading": "Automations",
+            "icon": "mdi:robot-outline",
+            "badges": [
+              {
+                "type": "entity",
+                "entity": "input_boolean.__P__show_hidden_automations",
+                "show_state": false,
+                "show_icon": true,
+                "icon": "mdi:eye-off-outline",
+                "tap_action": {
+                  "action": "toggle"
+                },
+                "visibility": [
+                  {
+                    "condition": "state",
+                    "entity": "input_boolean.__P__show_hidden_automations",
+                    "state": "off"
+                  }
+                ]
+              },
+              {
+                "type": "entity",
+                "entity": "input_boolean.__P__show_hidden_automations",
+                "show_state": false,
+                "show_icon": true,
+                "icon": "mdi:eye",
+                "color": "primary",
+                "tap_action": {
+                  "action": "toggle"
+                },
+                "visibility": [
+                  {
+                    "condition": "state",
+                    "entity": "input_boolean.__P__show_hidden_automations",
+                    "state": "on"
+                  }
+                ]
+              }
+            ]
+          },
+          "title-card-clickable": false,
+          "icon": "mdi:chevron-down",
+          "expanded": true,
+          "storage-id": "__P__automations",
+          "padding": "0",
+          "clear": true,
+          "grid_options": {
+            "columns": "full"
+          },
+          "cards": [
+            {
+              "type": "custom:auto-entities",
+              "card": {
+                "type": "grid",
+                "columns": 1,
+                "square": false
+              },
+              "card_param": "cards",
+              "filter": {
+                "include": [
+                  {
+                    "domain": "automation",
+                    "options": {
+                      "type": "custom:button-card",
+                      "show_label": true,
+                      "triggers_update": [
+                        "sensor.__P__hidden_items",
+                        "input_boolean.__P__show_hidden_automations"
+                      ],
+                      "icon": "[[[ return entity.state === 'on' ? 'mdi:robot' : 'mdi:robot-off'; ]]]",
+                      "label": "[[[ const t = entity.attributes.last_triggered; return 'Last triggered: ' + (t ? new Date(t).toLocaleString([], {weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'}) : 'Never'); ]]]",
+                      "custom_fields": {
+                        "eye": {
+                          "card": {
+                            "type": "custom:button-card",
+                            "variables": {
+                              "eid": "this.entity_id"
+                            },
+                            "triggers_update": [
+                              "sensor.__P__hidden_items",
+                              "input_boolean.__P__show_hidden_automations"
+                            ],
+                            "show_name": false,
+                            "icon": "[[[ const H=(((states['sensor.__P__hidden_items']||{}).attributes||{}).hidden)||{}; return (H['automations']||[]).includes(variables.eid) ? 'mdi:eye-off' : 'mdi:eye-outline'; ]]]",
+                            "tap_action": {
+                              "action": "perform-action",
+                              "perform_action": "script.__P__toggle_hidden",
+                              "data": {
+                                "list": "automations",
+                                "entity_id": "this.entity_id"
+                              }
+                            },
+                            "hold_action": {
+                              "action": "none"
+                            },
+                            "styles": {
+                              "card": [
+                                {
+                                  "background": "none"
+                                },
+                                {
+                                  "box-shadow": "none"
+                                },
+                                {
+                                  "border": "none"
+                                },
+                                {
+                                  "padding": "12px"
+                                },
+                                {
+                                  "width": "48px"
+                                },
+                                {
+                                  "height": "48px"
+                                },
+                                {
+                                  "border-radius": "24px"
+                                },
+                                {
+                                  "display": "[[[ return (states['input_boolean.__P__show_hidden_automations']||{}).state==='on' ? 'block' : 'none'; ]]]"
+                                }
+                              ],
+                              "icon": [
+                                {
+                                  "width": "24px"
+                                },
+                                {
+                                  "color": "var(--secondary-text-color)"
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        "sw": "[[[ return '<ha-switch ' + (entity.state === 'on' ? 'checked' : '') + ' style=\"pointer-events:none\"></ha-switch>'; ]]]"
+                      },
+                      "tap_action": {
+                        "action": "toggle",
+                        "confirmation": {
+                          "text": "[[[ return (entity.state === 'on' ? 'Turn off ' : 'Turn on ') + entity.attributes.friendly_name + '?'; ]]]"
+                        }
+                      },
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "styles": {
+                        "grid": [
+                          {
+                            "grid-template-areas": "\"i n eye sw\" \"i l eye sw\""
+                          },
+                          {
+                            "grid-template-columns": "[[[ return (states['input_boolean.__P__show_hidden_automations']||{}).state==='on' ? '40px 1fr 48px auto' : '40px 1fr 0px auto'; ]]]"
+                          },
+                          {
+                            "grid-template-rows": "auto auto"
+                          },
+                          {
+                            "column-gap": "16px"
+                          },
+                          {
+                            "align-items": "center"
+                          }
+                        ],
+                        "card": [
+                          {
+                            "padding": "8px 24px 8px 16px"
+                          },
+                          {
+                            "min-height": "72px"
+                          },
+                          {
+                            "background": "none"
+                          },
+                          {
+                            "box-shadow": "none"
+                          },
+                          {
+                            "border": "none"
+                          },
+                          {
+                            "border-radius": "0"
+                          },
+                          {
+                            "display": "[[[ const H=(((states['sensor.__P__hidden_items']||{}).attributes||{}).hidden)||{}; const s=(states['input_boolean.__P__show_hidden_automations']||{}).state==='on'; return ((H['automations']||[]).includes(entity.entity_id) && !s) ? 'none' : 'block'; ]]]"
+                          },
+                          {
+                            "opacity": "[[[ const H=(((states['sensor.__P__hidden_items']||{}).attributes||{}).hidden)||{}; return (H['automations']||[]).includes(entity.entity_id) ? '0.38' : '1'; ]]]"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "width": "24px"
+                          },
+                          {
+                            "color": "[[[ return entity.state === 'on' ? 'var(--primary-color)' : 'var(--secondary-text-color)'; ]]]"
+                          }
+                        ],
+                        "name": [
+                          {
+                            "justify-self": "start"
+                          },
+                          {
+                            "text-align": "left"
+                          },
+                          {
+                            "white-space": "normal"
+                          },
+                          {
+                            "font-size": "16px"
+                          },
+                          {
+                            "line-height": "24px"
+                          },
+                          {
+                            "font-weight": "400"
+                          },
+                          {
+                            "color": "var(--primary-text-color)"
+                          }
+                        ],
+                        "label": [
+                          {
+                            "justify-self": "start"
+                          },
+                          {
+                            "text-align": "left"
+                          },
+                          {
+                            "font-size": "14px"
+                          },
+                          {
+                            "line-height": "20px"
+                          },
+                          {
+                            "color": "var(--secondary-text-color)"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "exclude": [
+                  {
+                    "label": "__IGNORE__"
+                  }
+                ]
+              },
+              "sort": {
+                "method": "name"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "grid",
+      "cards": [
+        {
+          "type": "custom:expander-card",
+          "title-card": {
+            "type": "heading",
+            "heading": "Scripts",
+            "icon": "mdi:script-text-outline",
+            "badges": [
+              {
+                "type": "entity",
+                "entity": "input_boolean.__P__show_hidden_scripts",
+                "show_state": false,
+                "show_icon": true,
+                "icon": "mdi:eye-off-outline",
+                "tap_action": {
+                  "action": "toggle"
+                },
+                "visibility": [
+                  {
+                    "condition": "state",
+                    "entity": "input_boolean.__P__show_hidden_scripts",
+                    "state": "off"
+                  }
+                ]
+              },
+              {
+                "type": "entity",
+                "entity": "input_boolean.__P__show_hidden_scripts",
+                "show_state": false,
+                "show_icon": true,
+                "icon": "mdi:eye",
+                "color": "primary",
+                "tap_action": {
+                  "action": "toggle"
+                },
+                "visibility": [
+                  {
+                    "condition": "state",
+                    "entity": "input_boolean.__P__show_hidden_scripts",
+                    "state": "on"
+                  }
+                ]
+              }
+            ]
+          },
+          "title-card-clickable": false,
+          "icon": "mdi:chevron-down",
+          "expanded": true,
+          "storage-id": "__P__scripts",
+          "padding": "0",
+          "clear": true,
+          "grid_options": {
+            "columns": "full"
+          },
+          "cards": [
+            {
+              "type": "custom:auto-entities",
+              "card": {
+                "type": "grid",
+                "columns": 1,
+                "square": false
+              },
+              "card_param": "cards",
+              "filter": {
+                "include": [
+                  {
+                    "domain": "script",
+                    "options": {
+                      "type": "custom:button-card",
+                      "show_label": true,
+                      "triggers_update": [
+                        "sensor.__P__hidden_items",
+                        "input_boolean.__P__show_hidden_scripts"
+                      ],
+                      "icon": "mdi:script-text-outline",
+                      "label": "[[[ const t = entity.attributes.last_triggered; return 'Last run: ' + (t ? new Date(t).toLocaleString([], {weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'}) : 'Never'); ]]]",
+                      "custom_fields": {
+                        "eye": {
+                          "card": {
+                            "type": "custom:button-card",
+                            "variables": {
+                              "eid": "this.entity_id"
+                            },
+                            "triggers_update": [
+                              "sensor.__P__hidden_items",
+                              "input_boolean.__P__show_hidden_scripts"
+                            ],
+                            "show_name": false,
+                            "icon": "[[[ const H=(((states['sensor.__P__hidden_items']||{}).attributes||{}).hidden)||{}; return (H['scripts']||[]).includes(variables.eid) ? 'mdi:eye-off' : 'mdi:eye-outline'; ]]]",
+                            "tap_action": {
+                              "action": "perform-action",
+                              "perform_action": "script.__P__toggle_hidden",
+                              "data": {
+                                "list": "scripts",
+                                "entity_id": "this.entity_id"
+                              }
+                            },
+                            "hold_action": {
+                              "action": "none"
+                            },
+                            "styles": {
+                              "card": [
+                                {
+                                  "background": "none"
+                                },
+                                {
+                                  "box-shadow": "none"
+                                },
+                                {
+                                  "border": "none"
+                                },
+                                {
+                                  "padding": "12px"
+                                },
+                                {
+                                  "width": "48px"
+                                },
+                                {
+                                  "height": "48px"
+                                },
+                                {
+                                  "border-radius": "24px"
+                                },
+                                {
+                                  "display": "[[[ return (states['input_boolean.__P__show_hidden_scripts']||{}).state==='on' ? 'block' : 'none'; ]]]"
+                                }
+                              ],
+                              "icon": [
+                                {
+                                  "width": "24px"
+                                },
+                                {
+                                  "color": "var(--secondary-text-color)"
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        "sw": "[[[ return '<ha-icon icon=\"' + (entity.state === 'on' ? 'mdi:stop-circle-outline' : 'mdi:play-circle-outline') + '\" style=\"--mdc-icon-size:32px;color:var(--primary-color)\"></ha-icon>'; ]]]"
+                      },
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "styles": {
+                        "grid": [
+                          {
+                            "grid-template-areas": "\"i n eye sw\" \"i l eye sw\""
+                          },
+                          {
+                            "grid-template-columns": "[[[ return (states['input_boolean.__P__show_hidden_scripts']||{}).state==='on' ? '40px 1fr 48px auto' : '40px 1fr 0px auto'; ]]]"
+                          },
+                          {
+                            "grid-template-rows": "auto auto"
+                          },
+                          {
+                            "column-gap": "16px"
+                          },
+                          {
+                            "align-items": "center"
+                          }
+                        ],
+                        "card": [
+                          {
+                            "padding": "8px 24px 8px 16px"
+                          },
+                          {
+                            "min-height": "72px"
+                          },
+                          {
+                            "background": "none"
+                          },
+                          {
+                            "box-shadow": "none"
+                          },
+                          {
+                            "border": "none"
+                          },
+                          {
+                            "border-radius": "0"
+                          },
+                          {
+                            "display": "[[[ const H=(((states['sensor.__P__hidden_items']||{}).attributes||{}).hidden)||{}; const s=(states['input_boolean.__P__show_hidden_scripts']||{}).state==='on'; return ((H['scripts']||[]).includes(entity.entity_id) && !s) ? 'none' : 'block'; ]]]"
+                          },
+                          {
+                            "opacity": "[[[ const H=(((states['sensor.__P__hidden_items']||{}).attributes||{}).hidden)||{}; return (H['scripts']||[]).includes(entity.entity_id) ? '0.38' : '1'; ]]]"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "width": "24px"
+                          },
+                          {
+                            "color": "var(--secondary-text-color)"
+                          }
+                        ],
+                        "name": [
+                          {
+                            "justify-self": "start"
+                          },
+                          {
+                            "text-align": "left"
+                          },
+                          {
+                            "white-space": "normal"
+                          },
+                          {
+                            "font-size": "16px"
+                          },
+                          {
+                            "line-height": "24px"
+                          },
+                          {
+                            "font-weight": "400"
+                          },
+                          {
+                            "color": "var(--primary-text-color)"
+                          }
+                        ],
+                        "label": [
+                          {
+                            "justify-self": "start"
+                          },
+                          {
+                            "text-align": "left"
+                          },
+                          {
+                            "font-size": "14px"
+                          },
+                          {
+                            "line-height": "20px"
+                          },
+                          {
+                            "color": "var(--secondary-text-color)"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "exclude": [
+                  {
+                    "label": "__IGNORE__"
+                  }
+                ]
+              },
+              "sort": {
+                "method": "name"
+              }
+            }
+          ]
+        },
+        {
+          "type": "custom:expander-card",
+          "title-card": {
+            "type": "heading",
+            "heading": "Scenes",
+            "icon": "mdi:palette-outline",
+            "badges": [
+              {
+                "type": "entity",
+                "entity": "input_boolean.__P__show_hidden_scenes",
+                "show_state": false,
+                "show_icon": true,
+                "icon": "mdi:eye-off-outline",
+                "tap_action": {
+                  "action": "toggle"
+                },
+                "visibility": [
+                  {
+                    "condition": "state",
+                    "entity": "input_boolean.__P__show_hidden_scenes",
+                    "state": "off"
+                  }
+                ]
+              },
+              {
+                "type": "entity",
+                "entity": "input_boolean.__P__show_hidden_scenes",
+                "show_state": false,
+                "show_icon": true,
+                "icon": "mdi:eye",
+                "color": "primary",
+                "tap_action": {
+                  "action": "toggle"
+                },
+                "visibility": [
+                  {
+                    "condition": "state",
+                    "entity": "input_boolean.__P__show_hidden_scenes",
+                    "state": "on"
+                  }
+                ]
+              }
+            ]
+          },
+          "title-card-clickable": false,
+          "icon": "mdi:chevron-down",
+          "expanded": true,
+          "storage-id": "__P__scenes",
+          "padding": "0",
+          "clear": true,
+          "grid_options": {
+            "columns": "full"
+          },
+          "cards": [
+            {
+              "type": "custom:auto-entities",
+              "card": {
+                "type": "grid",
+                "columns": 1,
+                "square": false
+              },
+              "card_param": "cards",
+              "filter": {
+                "include": [
+                  {
+                    "domain": "scene",
+                    "options": {
+                      "type": "custom:button-card",
+                      "show_label": true,
+                      "triggers_update": [
+                        "sensor.__P__hidden_items",
+                        "input_boolean.__P__show_hidden_scenes"
+                      ],
+                      "icon": "mdi:palette-outline",
+                      "label": "[[[ const s = entity.state; const ok = s && !['unknown','unavailable'].includes(s); return 'Last activated: ' + (ok ? new Date(s).toLocaleString([], {weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'}) : 'Never'); ]]]",
+                      "custom_fields": {
+                        "eye": {
+                          "card": {
+                            "type": "custom:button-card",
+                            "variables": {
+                              "eid": "this.entity_id"
+                            },
+                            "triggers_update": [
+                              "sensor.__P__hidden_items",
+                              "input_boolean.__P__show_hidden_scenes"
+                            ],
+                            "show_name": false,
+                            "icon": "[[[ const H=(((states['sensor.__P__hidden_items']||{}).attributes||{}).hidden)||{}; return (H['scenes']||[]).includes(variables.eid) ? 'mdi:eye-off' : 'mdi:eye-outline'; ]]]",
+                            "tap_action": {
+                              "action": "perform-action",
+                              "perform_action": "script.__P__toggle_hidden",
+                              "data": {
+                                "list": "scenes",
+                                "entity_id": "this.entity_id"
+                              }
+                            },
+                            "hold_action": {
+                              "action": "none"
+                            },
+                            "styles": {
+                              "card": [
+                                {
+                                  "background": "none"
+                                },
+                                {
+                                  "box-shadow": "none"
+                                },
+                                {
+                                  "border": "none"
+                                },
+                                {
+                                  "padding": "12px"
+                                },
+                                {
+                                  "width": "48px"
+                                },
+                                {
+                                  "height": "48px"
+                                },
+                                {
+                                  "border-radius": "24px"
+                                },
+                                {
+                                  "display": "[[[ return (states['input_boolean.__P__show_hidden_scenes']||{}).state==='on' ? 'block' : 'none'; ]]]"
+                                }
+                              ],
+                              "icon": [
+                                {
+                                  "width": "24px"
+                                },
+                                {
+                                  "color": "var(--secondary-text-color)"
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        "sw": "<ha-icon icon=\"mdi:play-circle-outline\" style=\"--mdc-icon-size:32px;color:var(--primary-color)\"></ha-icon>"
+                      },
+                      "tap_action": {
+                        "action": "perform-action",
+                        "perform_action": "scene.turn_on",
+                        "target": {
+                          "entity_id": "entity"
+                        }
+                      },
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "styles": {
+                        "grid": [
+                          {
+                            "grid-template-areas": "\"i n eye sw\" \"i l eye sw\""
+                          },
+                          {
+                            "grid-template-columns": "[[[ return (states['input_boolean.__P__show_hidden_scenes']||{}).state==='on' ? '40px 1fr 48px auto' : '40px 1fr 0px auto'; ]]]"
+                          },
+                          {
+                            "grid-template-rows": "auto auto"
+                          },
+                          {
+                            "column-gap": "16px"
+                          },
+                          {
+                            "align-items": "center"
+                          }
+                        ],
+                        "card": [
+                          {
+                            "padding": "8px 24px 8px 16px"
+                          },
+                          {
+                            "min-height": "72px"
+                          },
+                          {
+                            "background": "none"
+                          },
+                          {
+                            "box-shadow": "none"
+                          },
+                          {
+                            "border": "none"
+                          },
+                          {
+                            "border-radius": "0"
+                          },
+                          {
+                            "display": "[[[ const H=(((states['sensor.__P__hidden_items']||{}).attributes||{}).hidden)||{}; const s=(states['input_boolean.__P__show_hidden_scenes']||{}).state==='on'; return ((H['scenes']||[]).includes(entity.entity_id) && !s) ? 'none' : 'block'; ]]]"
+                          },
+                          {
+                            "opacity": "[[[ const H=(((states['sensor.__P__hidden_items']||{}).attributes||{}).hidden)||{}; return (H['scenes']||[]).includes(entity.entity_id) ? '0.38' : '1'; ]]]"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "width": "24px"
+                          },
+                          {
+                            "color": "var(--secondary-text-color)"
+                          }
+                        ],
+                        "name": [
+                          {
+                            "justify-self": "start"
+                          },
+                          {
+                            "text-align": "left"
+                          },
+                          {
+                            "white-space": "normal"
+                          },
+                          {
+                            "font-size": "16px"
+                          },
+                          {
+                            "line-height": "24px"
+                          },
+                          {
+                            "font-weight": "400"
+                          },
+                          {
+                            "color": "var(--primary-text-color)"
+                          }
+                        ],
+                        "label": [
+                          {
+                            "justify-self": "start"
+                          },
+                          {
+                            "text-align": "left"
+                          },
+                          {
+                            "font-size": "14px"
+                          },
+                          {
+                            "line-height": "20px"
+                          },
+                          {
+                            "color": "var(--secondary-text-color)"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "exclude": [
+                  {
+                    "label": "__IGNORE__"
+                  }
+                ]
+              },
+              "sort": {
+                "method": "name"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
