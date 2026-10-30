@@ -1,0 +1,179 @@
+# Version 2: big, colourful full-width tiles. Add these as cards in a section,
+# for example right under the heading card. Each tile shows itself only while
+# its season sensor is on, so the dashboard stays quiet the rest of the year.
+# `hide_state` and `state_content: []` hide the "last activated" time under the name.
+# Needs: Home Assistant 2026.5+ (tile card with visibility). No HACS cards.
+- type: tile
+  entity: scene.halloween
+  name: "🎃 Halloween is here! Tap to spook up the lights"
+  icon: mdi:halloween
+  color: orange
+  vertical: false
+  hide_state: true
+  state_content: []
+  tap_action:
+    action: perform-action
+    perform_action: scene.turn_on
+    target:
+      entity_id: scene.halloween
+  icon_tap_action:
+    action: perform-action
+    perform_action: scene.turn_on
+    target:
+      entity_id: scene.halloween
+  grid_options:
+    columns: full
+  visibility:
+    - condition: state
+      entity: binary_sensor.halloween_season
+      state: "on"
+
+- type: tile
+  entity: scene.christmas
+  name: "🎄 Christmas is coming! Tap to light up the house"
+  icon: mdi:pine-tree
+  color: red
+  vertical: false
+  hide_state: true
+  state_content: []
+  tap_action:
+    action: perform-action
+    perform_action: scene.turn_on
+    target:
+      entity_id: scene.christmas
+  icon_tap_action:
+    action: perform-action
+    perform_action: scene.turn_on
+    target:
+      entity_id: scene.christmas
+  grid_options:
+    columns: full
+  visibility:
+    - condition: state
+      entity: binary_sensor.christmas_season
+      state: "on"
+
+- type: tile
+  entity: scene.valentines
+  name: "💘 Valentine's time! Tap for lovey-dovey lights"
+  icon: mdi:heart
+  color: pink
+  vertical: false
+  hide_state: true
+  state_content: []
+  tap_action:
+    action: perform-action
+    perform_action: scene.turn_on
+    target:
+      entity_id: scene.valentines
+  icon_tap_action:
+    action: perform-action
+    perform_action: scene.turn_on
+    target:
+      entity_id: scene.valentines
+  grid_options:
+    columns: full
+  visibility:
+    - condition: state
+      entity: binary_sensor.valentines_season
+      state: "on"
+
+- type: tile
+  entity: scene.st_patricks
+  name: "🍀 Feeling lucky? Tap for St. Patrick's green"
+  icon: mdi:clover
+  color: green
+  vertical: false
+  hide_state: true
+  state_content: []
+  tap_action:
+    action: perform-action
+    perform_action: scene.turn_on
+    target:
+      entity_id: scene.st_patricks
+  icon_tap_action:
+    action: perform-action
+    perform_action: scene.turn_on
+    target:
+      entity_id: scene.st_patricks
+  grid_options:
+    columns: full
+  visibility:
+    - condition: state
+      entity: binary_sensor.st_patricks_season
+      state: "on"
+
+- type: tile
+  entity: scene.easter
+  name: "🐣 Easter is near! Tap for pastel lights"
+  icon: mdi:egg-easter
+  color: purple
+  vertical: false
+  hide_state: true
+  state_content: []
+  tap_action:
+    action: perform-action
+    perform_action: scene.turn_on
+    target:
+      entity_id: scene.easter
+  icon_tap_action:
+    action: perform-action
+    perform_action: scene.turn_on
+    target:
+      entity_id: scene.easter
+  grid_options:
+    columns: full
+  visibility:
+    - condition: state
+      entity: binary_sensor.easter_season
+      state: "on"
+
+- type: tile
+  entity: scene.canada_day
+  name: "🍁 Happy Canada Day! Tap to go red and white"
+  icon: mdi:leaf-maple
+  color: red
+  vertical: false
+  hide_state: true
+  state_content: []
+  tap_action:
+    action: perform-action
+    perform_action: scene.turn_on
+    target:
+      entity_id: scene.canada_day
+  icon_tap_action:
+    action: perform-action
+    perform_action: scene.turn_on
+    target:
+      entity_id: scene.canada_day
+  grid_options:
+    columns: full
+  visibility:
+    - condition: state
+      entity: binary_sensor.canada_day_season
+      state: "on"
+
+- type: tile
+  entity: scene.thanksgiving
+  name: "🦃 Thanksgiving glow! Tap for warm harvest lights"
+  icon: mdi:food-turkey
+  color: amber
+  vertical: false
+  hide_state: true
+  state_content: []
+  tap_action:
+    action: perform-action
+    perform_action: scene.turn_on
+    target:
+      entity_id: scene.thanksgiving
+  icon_tap_action:
+    action: perform-action
+    perform_action: scene.turn_on
+    target:
+      entity_id: scene.thanksgiving
+  grid_options:
+    columns: full
+  visibility:
+    - condition: state
+      entity: binary_sensor.thanksgiving_season
+      state: "on"
