@@ -1,0 +1,105 @@
+# Seasonal lighting: one "in season" sensor and one lights scene per holiday.
+#
+# What it does
+#   Each binary_sensor turns on during the run-up to its holiday (14 days, 24 for
+#   Christmas) and off the day after. A dashboard button can show itself only while
+#   its sensor is on (see dashboards/seasonal-lighting/).
+#
+# Replace before use
+#   light.example_room_1 .. light.example_room_4  -> your colour-capable lights
+#   Colours and brightness in each scene are examples. Change them freely.
+#
+# Holidays are Canadian where they differ: Thanksgiving is the second Monday of
+# October. Everything else uses a fixed date, except Easter, which is calculated.
+# The date maths was checked on the first and last day of each window (see the
+# README, "Status").
+#
+# Prefer the UI? Each `state:` template below also works pasted into a Template
+# helper (Settings -> Devices & services -> Helpers -> Template -> Binary sensor).
+
+template:
+  - binary_sensor:
+      - name: Halloween Season
+        unique_id: seasonal_lighting_halloween_season
+        state: >-
+          {% set t = now().date() %}{% set h = t.replace(month=10, day=31) %}{{ 0 <= (h - t).days <= 14 }}
+
+      - name: Christmas Season
+        unique_id: seasonal_lighting_christmas_season
+        state: >-
+          {% set t = now().date() %}{% set h = t.replace(month=12, day=25) %}{{ 0 <= (h - t).days <= 24 }}
+
+      - name: Valentines Season
+        unique_id: seasonal_lighting_valentines_season
+        state: >-
+          {% set t = now().date() %}{% set h = t.replace(month=2, day=14) %}{{ 0 <= (h - t).days <= 14 }}
+
+      - name: St Patricks Season
+        unique_id: seasonal_lighting_st_patricks_season
+        state: >-
+          {% set t = now().date() %}{% set h = t.replace(month=3, day=17) %}{{ 0 <= (h - t).days <= 14 }}
+
+      - name: Easter Season
+        unique_id: seasonal_lighting_easter_season
+        state: >-
+          {% set t = now().date() %}{% set y = t.year %}{% set a = y % 19 %}{% set b = y // 100 %}{% set c = y % 100 %}{% set d = b // 4 %}{% set e = b % 4 %}{% set f = (b + 8) // 25 %}{% set g = (b - f + 1) // 3 %}{% set h = (19*a + b - d - g + 15) % 30 %}{% set i = c // 4 %}{% set k = c % 4 %}{% set l = (32 + 2*e + 2*i - h - k) % 7 %}{% set m = (a + 11*h + 22*l) // 451 %}{% set mo = (h + l - 7*m + 114) // 31 %}{% set dy = (h + l - 7*m + 114) % 31 + 1 %}{% set easter = t.replace(month=mo, day=dy) %}{{ 0 <= (easter - t).days <= 14 }}
+
+      - name: Canada Day Season
+        unique_id: seasonal_lighting_canada_day_season
+        state: >-
+          {% set t = now().date() %}{% set h = t.replace(month=7, day=1) %}{{ 0 <= (h - t).days <= 14 }}
+
+      - name: Thanksgiving Season
+        unique_id: seasonal_lighting_thanksgiving_season
+        state: >-
+          {% set t = now().date() %}{% set o = t.replace(month=10, day=1) %}{% set d = 8 + (7 - o.weekday()) % 7 %}{% set h = t.replace(month=10, day=d) %}{{ 0 <= (h - t).days <= 14 }}
+
+scene:
+  - name: Halloween
+    entities:
+      light.example_room_1: {state: "on", brightness: 140, rgb_color: [255, 90, 0]}
+      light.example_room_2: {state: "on", brightness: 140, rgb_color: [140, 0, 255]}
+      light.example_room_3: {state: "on", brightness: 140, rgb_color: [255, 90, 0]}
+      light.example_room_4: {state: "on", brightness: 140, rgb_color: [140, 0, 255]}
+
+  - name: Christmas
+    entities:
+      light.example_room_1: {state: "on", brightness: 140, rgb_color: [255, 0, 0]}
+      light.example_room_2: {state: "on", brightness: 140, rgb_color: [0, 200, 40]}
+      light.example_room_3: {state: "on", brightness: 140, rgb_color: [255, 0, 0]}
+      light.example_room_4: {state: "on", brightness: 140, rgb_color: [0, 200, 40]}
+
+  - name: Valentines
+    entities:
+      light.example_room_1: {state: "on", brightness: 140, rgb_color: [255, 20, 90]}
+      light.example_room_2: {state: "on", brightness: 140, rgb_color: [255, 120, 180]}
+      light.example_room_3: {state: "on", brightness: 140, rgb_color: [255, 20, 90]}
+      light.example_room_4: {state: "on", brightness: 140, rgb_color: [255, 120, 180]}
+
+  - name: St Patricks
+    entities:
+      light.example_room_1: {state: "on", brightness: 140, rgb_color: [0, 200, 40]}
+      light.example_room_2: {state: "on", brightness: 140, rgb_color: [140, 255, 60]}
+      light.example_room_3: {state: "on", brightness: 140, rgb_color: [0, 200, 40]}
+      light.example_room_4: {state: "on", brightness: 140, rgb_color: [140, 255, 60]}
+
+  - name: Easter
+    entities:
+      light.example_room_1: {state: "on", brightness: 140, rgb_color: [190, 140, 255]}
+      light.example_room_2: {state: "on", brightness: 140, rgb_color: [255, 200, 90]}
+      light.example_room_3: {state: "on", brightness: 140, rgb_color: [190, 140, 255]}
+      light.example_room_4: {state: "on", brightness: 140, rgb_color: [255, 200, 90]}
+
+  - name: Canada Day
+    entities:
+      light.example_room_1: {state: "on", brightness: 140, rgb_color: [255, 0, 0]}
+      light.example_room_2: {state: "on", brightness: 140, rgb_color: [255, 255, 255]}
+      light.example_room_3: {state: "on", brightness: 140, rgb_color: [255, 0, 0]}
+      light.example_room_4: {state: "on", brightness: 140, rgb_color: [255, 255, 255]}
+
+  - name: Thanksgiving
+    entities:
+      light.example_room_1: {state: "on", brightness: 140, rgb_color: [255, 110, 0]}
+      light.example_room_2: {state: "on", brightness: 140, rgb_color: [200, 40, 0]}
+      light.example_room_3: {state: "on", brightness: 140, rgb_color: [255, 110, 0]}
+      light.example_room_4: {state: "on", brightness: 140, rgb_color: [200, 40, 0]}

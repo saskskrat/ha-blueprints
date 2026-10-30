@@ -1,0 +1,93 @@
+# Version 1: compact badges. Add each one under a heading card's `badges:` list.
+# Each badge shows itself only while its season sensor is on.
+# Needs: Home Assistant 2026.5+ (button badge with visibility). No HACS cards.
+- type: button
+  icon: mdi:halloween
+  text: Halloween
+  visibility:
+    - condition: state
+      entity: binary_sensor.halloween_season
+      state: "on"
+  tap_action:
+    action: perform-action
+    perform_action: scene.turn_on
+    target:
+      entity_id: scene.halloween
+
+- type: button
+  icon: mdi:pine-tree
+  text: Christmas
+  visibility:
+    - condition: state
+      entity: binary_sensor.christmas_season
+      state: "on"
+  tap_action:
+    action: perform-action
+    perform_action: scene.turn_on
+    target:
+      entity_id: scene.christmas
+
+- type: button
+  icon: mdi:heart
+  text: Valentine's
+  visibility:
+    - condition: state
+      entity: binary_sensor.valentines_season
+      state: "on"
+  tap_action:
+    action: perform-action
+    perform_action: scene.turn_on
+    target:
+      entity_id: scene.valentines
+
+- type: button
+  icon: mdi:clover
+  text: St. Patrick's
+  visibility:
+    - condition: state
+      entity: binary_sensor.st_patricks_season
+      state: "on"
+  tap_action:
+    action: perform-action
+    perform_action: scene.turn_on
+    target:
+      entity_id: scene.st_patricks
+
+- type: button
+  icon: mdi:egg-easter
+  text: Easter
+  visibility:
+    - condition: state
+      entity: binary_sensor.easter_season
+      state: "on"
+  tap_action:
+    action: perform-action
+    perform_action: scene.turn_on
+    target:
+      entity_id: scene.easter
+
+- type: button
+  icon: mdi:leaf-maple
+  text: Canada Day
+  visibility:
+    - condition: state
+      entity: binary_sensor.canada_day_season
+      state: "on"
+  tap_action:
+    action: perform-action
+    perform_action: scene.turn_on
+    target:
+      entity_id: scene.canada_day
+
+- type: button
+  icon: mdi:food-turkey
+  text: Thanksgiving
+  visibility:
+    - condition: state
+      entity: binary_sensor.thanksgiving_season
+      state: "on"
+  tap_action:
+    action: perform-action
+    perform_action: scene.turn_on
+    target:
+      entity_id: scene.thanksgiving
