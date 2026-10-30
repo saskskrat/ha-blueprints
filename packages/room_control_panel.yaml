@@ -1,0 +1,59 @@
+# Package: room_control_panel
+# Supporting pieces for dashboards/room-control-panel: a "show hidden" switch, a
+# toggle script, and a sensor that remembers which items you hid. Hiding is stored
+# in Home Assistant (not the browser), so every device sees the same list.
+#
+# Names here must match the ones in your rooms.json (hiddenSensor, toggleScript,
+# showHiddenBoolean). The defaults below match rooms.example.json.
+
+input_boolean:
+  room_panel_show_hidden_scenes:
+    name: Room panel - show hidden scenes
+    icon: mdi:eye
+
+script:
+  room_panel_toggle_hidden:
+    alias: Room panel - toggle hidden item
+    description: >-
+      Adds the entity to the named hidden list, or removes it if it is already
+      there. The dashboard's eye buttons call this.
+    mode: queued
+    icon: mdi:eye-off
+    fields:
+      entity_id:
+        name: Entity
+        required: true
+        selector:
+          entity: {}
+      list:
+        name: List
+        description: Hidden-list key, e.g. scenes (any name works)
+        required: true
+        selector:
+          text:
+    sequence:
+      - event: room_panel_toggle_hidden
+        event_data:
+          entity_id: "{{ entity_id }}"
+          list: "{{ list }}"
+
+template:
+  - triggers:
+      - trigger: event
+        event_type: room_panel_toggle_hidden
+    sensor:
+      - name: Room panel hidden items
+        unique_id: room_panel_hidden_items
+        device_class: timestamp
+        # State only records when the list last changed; the data is in `hidden`.
+        state: "{{ now().isoformat() }}"
+        attributes:
+          # {list-name: [entity_id, ...]}. Toggles the event's entity in its list.
+          hidden: >-
+            {% set cur = this.attributes.hidden
+               if this is not none and this.attributes.hidden is defined else {} %}
+            {% set k = trigger.event.data.list %}
+            {% set e = trigger.event.data.entity_id %}
+            {% set lst = cur.get(k, []) %}
+            {% set new = (lst | reject('eq', e) | list) if e in lst else (lst + [e]) %}
+            {{ dict(cur.items() | list + [(k, new)]) }}

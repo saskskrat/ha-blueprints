@@ -1,0 +1,1326 @@
+{
+  "title": "Room Control Panel",
+  "views": [
+    {
+      "title": "Rooms",
+      "path": "rooms",
+      "icon": "mdi:home-outline",
+      "type": "sections",
+      "max_columns": 2,
+      "sections": [
+        {
+          "type": "grid",
+          "cards": [
+            {
+              "type": "custom:expander-card",
+              "title-card": {
+                "type": "area",
+                "area": "example_living_room",
+                "display_type": "compact",
+                "features": [
+                  {
+                    "type": "area-controls"
+                  }
+                ],
+                "tap_action": {
+                  "action": "none"
+                }
+              },
+              "title-card-clickable": false,
+              "title-card-button-overlay": true,
+              "overlay-margin": "8px",
+              "icon": "mdi:chevron-down",
+              "expanded": true,
+              "storage-id": "room_panel_example_living_room",
+              "padding": "12px",
+              "child-padding": "0",
+              "expanded-gap": "12px",
+              "clear": false,
+              "expander-card-background": "color-mix(in srgb, var(--primary-text-color) 5%, transparent)",
+              "grid_options": {
+                "columns": "full"
+              },
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Scenes",
+                  "heading_style": "subtitle",
+                  "icon": "mdi:palette-outline",
+                  "badges": [
+                    {
+                      "type": "button",
+                      "icon": "mdi:eye-off-outline",
+                      "text": "Show hidden",
+                      "visibility": [
+                        {
+                          "condition": "state",
+                          "entity": "input_boolean.room_panel_show_hidden_scenes",
+                          "state": "off"
+                        }
+                      ],
+                      "tap_action": {
+                        "action": "perform-action",
+                        "perform_action": "input_boolean.toggle",
+                        "target": {
+                          "entity_id": "input_boolean.room_panel_show_hidden_scenes"
+                        }
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "icon": "mdi:eye",
+                      "text": "Hide hidden",
+                      "visibility": [
+                        {
+                          "condition": "state",
+                          "entity": "input_boolean.room_panel_show_hidden_scenes",
+                          "state": "on"
+                        }
+                      ],
+                      "tap_action": {
+                        "action": "perform-action",
+                        "perform_action": "input_boolean.toggle",
+                        "target": {
+                          "entity_id": "input_boolean.room_panel_show_hidden_scenes"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "grid",
+                    "columns": 2,
+                    "square": false
+                  },
+                  "card_param": "cards",
+                  "filter": {
+                    "template": "{% set a='example_living_room' %}{% set H = (state_attr('sensor.room_panel_hidden_items','hidden') or {}).get('scenes', []) %}{% set show = is_state('input_boolean.room_panel_show_hidden_scenes','on') %}{% set ign = label_entities('dashboard_ignore') %}{% set ns = namespace(o=[]) %}{% for e in area_entities(a) | select('match','scene\\.') | reject('in', ign) | sort %}{% set hd = e in H %}{% if show or not hd %}{% set ns.o = ns.o + [{'type':'custom:button-card','entity':e,'show_name':false,'show_icon':false,'show_state':false,'show_label':false,'tap_action':{'action':'none'},'hold_action':{'action':'none'},'custom_fields':{'tile':{'card':{'type':'tile','entity':e,'tap_action':{'action':'perform-action','perform_action':'scene.turn_on','target':{'entity_id':e}},'icon_tap_action':{'action':'perform-action','perform_action':'scene.turn_on','target':{'entity_id':e}}}},'eye':{'card':{'type':'custom:button-card','show_name':false,'icon':('mdi:eye-off' if hd else 'mdi:eye-outline'),'tap_action':{'action':'perform-action','perform_action':'script.room_panel_toggle_hidden','data':{'list':'scenes','entity_id':e}},'hold_action':{'action':'none'},'styles':{'card':[{'background':'none'},{'box-shadow':'none'},{'border':'none'},{'padding':'4px'},{'width':'32px'},{'height':'32px'},{'border-radius':'16px'},{'display':('block' if show else 'none')}],'icon':[{'width':'18px'},{'color':'var(--secondary-text-color)'}]}}}},'styles':{'grid':[{'grid-template-areas':'\"tile\"'},{'grid-template-columns':'1fr'},{'align-items':'center'}],'card':[{'position':'relative'},{'padding':'0'},{'background':'none'},{'box-shadow':'none'},{'border':'none'},{'overflow':'visible'},{'opacity':('0.38' if hd else '1')}],'custom_fields':{'tile':[{'width':'100%'}],'eye':[{'position':'absolute'},{'top':'50%'},{'right':'8px'},{'transform':'translateY(-50%)'},{'z-index':'2'}]}}}] %}{% endif %}{% endfor %}{{ ns.o }}"
+                  },
+                  "else": {
+                    "type": "markdown",
+                    "content": "No scenes in this room."
+                  }
+                },
+                {
+                  "type": "heading",
+                  "heading": "Room lights",
+                  "heading_style": "subtitle",
+                  "icon": "mdi:lightbulb-group-outline"
+                },
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "state",
+                      "entity": "input_select.example_living_room_light_mode",
+                      "state": "White"
+                    }
+                  ],
+                  "card": {
+                    "type": "vertical-stack",
+                    "cards": [
+                      {
+                        "type": "tile",
+                        "entity": "input_select.example_living_room_light_mode",
+                        "name": "Light mode",
+                        "icon": "mdi:white-balance-sunny",
+                        "tap_action": {
+                          "action": "perform-action",
+                          "perform_action": "input_select.select_option",
+                          "target": {
+                            "entity_id": "input_select.example_living_room_light_mode"
+                          },
+                          "data": {
+                            "option": "Colour"
+                          }
+                        },
+                        "icon_tap_action": {
+                          "action": "perform-action",
+                          "perform_action": "input_select.select_option",
+                          "target": {
+                            "entity_id": "input_select.example_living_room_light_mode"
+                          },
+                          "data": {
+                            "option": "Colour"
+                          }
+                        }
+                      },
+                      {
+                        "type": "grid",
+                        "columns": 3,
+                        "square": false,
+                        "cards": [
+                          {
+                            "type": "shortcut",
+                            "label": "Warm",
+                            "icon": "mdi:weather-sunset",
+                            "tap_action": {
+                              "action": "perform-action",
+                              "perform_action": "light.turn_on",
+                              "target": {
+                                "entity_id": "light.example_living_room_lights"
+                              },
+                              "data": {
+                                "color_temp_kelvin": 2700
+                              }
+                            }
+                          },
+                          {
+                            "type": "shortcut",
+                            "label": "Daylight",
+                            "icon": "mdi:white-balance-sunny",
+                            "tap_action": {
+                              "action": "perform-action",
+                              "perform_action": "light.turn_on",
+                              "target": {
+                                "entity_id": "light.example_living_room_lights"
+                              },
+                              "data": {
+                                "color_temp_kelvin": 4000
+                              }
+                            }
+                          },
+                          {
+                            "type": "shortcut",
+                            "label": "Cool",
+                            "icon": "mdi:snowflake",
+                            "tap_action": {
+                              "action": "perform-action",
+                              "perform_action": "light.turn_on",
+                              "target": {
+                                "entity_id": "light.example_living_room_lights"
+                              },
+                              "data": {
+                                "color_temp_kelvin": 6000
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "custom:button-card",
+                        "entity": "light.example_living_room_lights",
+                        "show_name": false,
+                        "show_icon": false,
+                        "show_state": false,
+                        "show_label": false,
+                        "tap_action": {
+                          "action": "none"
+                        },
+                        "hold_action": {
+                          "action": "none"
+                        },
+                        "custom_fields": {
+                          "tile": {
+                            "card": {
+                              "type": "tile",
+                              "name": "Brightness",
+                              "features": [
+                                {
+                                  "type": "light-brightness"
+                                }
+                              ],
+                              "tap_action": {
+                                "action": "more-info"
+                              },
+                              "entity": "light.example_living_room_lights",
+                              "hide_state": true
+                            }
+                          },
+                          "pct": "[[[ const s = states[entity.entity_id]; if (!s || s.state === 'unavailable') return ''; if (s.state !== 'on') return 'Off'; return Math.round((s.attributes.brightness || 0) / 2.55) + '%'; ]]]"
+                        },
+                        "styles": {
+                          "grid": [
+                            {
+                              "grid-template-areas": "\"tile\""
+                            },
+                            {
+                              "grid-template-columns": "1fr"
+                            }
+                          ],
+                          "card": [
+                            {
+                              "position": "relative"
+                            },
+                            {
+                              "padding": "0"
+                            },
+                            {
+                              "background": "none"
+                            },
+                            {
+                              "box-shadow": "none"
+                            },
+                            {
+                              "border": "none"
+                            },
+                            {
+                              "overflow": "visible"
+                            }
+                          ],
+                          "custom_fields": {
+                            "tile": [
+                              {
+                                "width": "100%"
+                              }
+                            ],
+                            "pct": [
+                              {
+                                "position": "absolute"
+                              },
+                              {
+                                "top": "28px"
+                              },
+                              {
+                                "transform": "translateY(-50%)"
+                              },
+                              {
+                                "right": "16px"
+                              },
+                              {
+                                "font-size": "11px"
+                              },
+                              {
+                                "color": "var(--secondary-text-color)"
+                              },
+                              {
+                                "opacity": "0.7"
+                              },
+                              {
+                                "pointer-events": "none"
+                              },
+                              {
+                                "z-index": "2"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        "type": "shortcut",
+                        "label": "All lights off",
+                        "icon": "mdi:lightbulb-off-outline",
+                        "tap_action": {
+                          "action": "perform-action",
+                          "perform_action": "light.turn_off",
+                          "target": {
+                            "area_id": "example_living_room"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "state",
+                      "entity": "input_select.example_living_room_light_mode",
+                      "state": "Colour"
+                    }
+                  ],
+                  "card": {
+                    "type": "vertical-stack",
+                    "cards": [
+                      {
+                        "type": "tile",
+                        "entity": "input_select.example_living_room_light_mode",
+                        "name": "Light mode",
+                        "icon": "mdi:palette",
+                        "tap_action": {
+                          "action": "perform-action",
+                          "perform_action": "input_select.select_option",
+                          "target": {
+                            "entity_id": "input_select.example_living_room_light_mode"
+                          },
+                          "data": {
+                            "option": "White"
+                          }
+                        },
+                        "icon_tap_action": {
+                          "action": "perform-action",
+                          "perform_action": "input_select.select_option",
+                          "target": {
+                            "entity_id": "input_select.example_living_room_light_mode"
+                          },
+                          "data": {
+                            "option": "White"
+                          }
+                        }
+                      },
+                      {
+                        "type": "custom:button-card",
+                        "entity": "light.example_living_room_lights",
+                        "show_name": false,
+                        "show_icon": false,
+                        "show_state": false,
+                        "show_label": false,
+                        "tap_action": {
+                          "action": "none"
+                        },
+                        "hold_action": {
+                          "action": "none"
+                        },
+                        "custom_fields": {
+                          "tile": {
+                            "card": {
+                              "type": "tile",
+                              "name": "Colour (tap for wheel)",
+                              "icon": "mdi:palette",
+                              "features": [
+                                {
+                                  "type": "light-color-favorites"
+                                },
+                                {
+                                  "type": "light-brightness"
+                                }
+                              ],
+                              "tap_action": {
+                                "action": "more-info"
+                              },
+                              "entity": "light.example_living_room_lights",
+                              "hide_state": true
+                            }
+                          },
+                          "pct": "[[[ const s = states[entity.entity_id]; if (!s || s.state === 'unavailable') return ''; if (s.state !== 'on') return 'Off'; return Math.round((s.attributes.brightness || 0) / 2.55) + '%'; ]]]"
+                        },
+                        "styles": {
+                          "grid": [
+                            {
+                              "grid-template-areas": "\"tile\""
+                            },
+                            {
+                              "grid-template-columns": "1fr"
+                            }
+                          ],
+                          "card": [
+                            {
+                              "position": "relative"
+                            },
+                            {
+                              "padding": "0"
+                            },
+                            {
+                              "background": "none"
+                            },
+                            {
+                              "box-shadow": "none"
+                            },
+                            {
+                              "border": "none"
+                            },
+                            {
+                              "overflow": "visible"
+                            }
+                          ],
+                          "custom_fields": {
+                            "tile": [
+                              {
+                                "width": "100%"
+                              }
+                            ],
+                            "pct": [
+                              {
+                                "position": "absolute"
+                              },
+                              {
+                                "top": "28px"
+                              },
+                              {
+                                "transform": "translateY(-50%)"
+                              },
+                              {
+                                "right": "16px"
+                              },
+                              {
+                                "font-size": "11px"
+                              },
+                              {
+                                "color": "var(--secondary-text-color)"
+                              },
+                              {
+                                "opacity": "0.7"
+                              },
+                              {
+                                "pointer-events": "none"
+                              },
+                              {
+                                "z-index": "2"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        "type": "shortcut",
+                        "label": "All lights off",
+                        "icon": "mdi:lightbulb-off-outline",
+                        "tap_action": {
+                          "action": "perform-action",
+                          "perform_action": "light.turn_off",
+                          "target": {
+                            "area_id": "example_living_room"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "heading",
+                  "heading": "Lights",
+                  "heading_style": "subtitle",
+                  "icon": "mdi:lightbulb-outline"
+                },
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "grid",
+                    "columns": 2,
+                    "square": false
+                  },
+                  "card_param": "cards",
+                  "filter": {
+                    "template": "{% set a='example_living_room' %}{% set groups = states.light | selectattr('attributes.entity_id','defined') | map(attribute='entity_id') | list %}{% set hid = label_entities('dashboard_ignore') %}{% set ns = namespace(o=[]) %}{% for e in area_entities(a) | select('match','light\\.') | reject('in', groups) | reject('in', hid) | reject('is_state','unavailable') | sort %}{% set ns.o = ns.o + [{'type':'custom:button-card','entity':e,'show_name':false,'show_icon':false,'show_state':false,'show_label':false,'tap_action':{'action':'none'},'hold_action':{'action':'none'},'custom_fields':{'tile':{'card':{'type':'tile','entity':e,'features':[{'type':'light-brightness'}],'features_position':'bottom','hide_state':true,'tap_action':{'action':'more-info'},'icon_tap_action':{'action':'toggle'}}},'pct':\"[[[ const s = states[entity.entity_id]; if (!s) return ''; const m = s.attributes.supported_color_modes || []; if (m.length === 0 || (m.length === 1 && m[0] === 'onoff')) return ''; if (s.state !== 'on') return 'Off'; return Math.round((s.attributes.brightness || 0) / 2.55) + '%'; ]]]\"},'styles':{'grid':[{'grid-template-areas':'\"tile\"'},{'grid-template-columns':'1fr'}],'card':[{'position':'relative'},{'padding':'0'},{'background':'none'},{'box-shadow':'none'},{'border':'none'},{'overflow':'visible'}],'custom_fields':{'tile':[{'width':'100%'}],'pct':[{'position':'absolute'},{'right':'24px'},{'bottom':'32px'},{'transform':'translateY(50%)'},{'font-size':'11px'},{'font-weight':'500'},{'color':'var(--primary-text-color)'},{'opacity':'0.7'},{'pointer-events':'none'},{'z-index':'2'}]}}}] %}{% endfor %}{{ ns.o }}"
+                  },
+                  "else": {
+                    "type": "markdown",
+                    "content": "No lights in this room."
+                  }
+                },
+                {
+                  "type": "heading",
+                  "heading": "Media",
+                  "heading_style": "subtitle",
+                  "icon": "mdi:play-circle-outline"
+                },
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "grid",
+                    "columns": 2,
+                    "square": false
+                  },
+                  "card_param": "cards",
+                  "filter": {
+                    "template": "{% set a='example_living_room' %}{% set hid = label_entities('dashboard_ignore') + [] %}{% set ns = namespace(o=[]) %}{% for e in area_entities(a) | select('match','media_player\\.') | reject('in', hid) | reject('is_state','unavailable') | sort %}{% set ns.o = ns.o + [{'type':'tile','entity':e,'features':[{'type':'media-player-volume-slider'}],'tap_action':{'action':'more-info'},'icon_tap_action':{'action':'toggle'}}] %}{% endfor %}{{ ns.o }}"
+                  },
+                  "else": {
+                    "type": "markdown",
+                    "content": "No media players in this room."
+                  }
+                }
+              ]
+            },
+            {
+              "type": "custom:expander-card",
+              "title-card": {
+                "type": "area",
+                "area": "example_backyard",
+                "display_type": "compact",
+                "features": [
+                  {
+                    "type": "area-controls"
+                  }
+                ],
+                "tap_action": {
+                  "action": "none"
+                }
+              },
+              "title-card-clickable": false,
+              "title-card-button-overlay": true,
+              "overlay-margin": "8px",
+              "icon": "mdi:chevron-down",
+              "expanded": false,
+              "storage-id": "room_panel_example_backyard",
+              "padding": "12px",
+              "child-padding": "0",
+              "expanded-gap": "12px",
+              "clear": false,
+              "expander-card-background": "color-mix(in srgb, var(--primary-text-color) 5%, transparent)",
+              "grid_options": {
+                "columns": "full"
+              },
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Scenes",
+                  "heading_style": "subtitle",
+                  "icon": "mdi:palette-outline",
+                  "badges": [
+                    {
+                      "type": "button",
+                      "icon": "mdi:eye-off-outline",
+                      "text": "Show hidden",
+                      "visibility": [
+                        {
+                          "condition": "state",
+                          "entity": "input_boolean.room_panel_show_hidden_scenes",
+                          "state": "off"
+                        }
+                      ],
+                      "tap_action": {
+                        "action": "perform-action",
+                        "perform_action": "input_boolean.toggle",
+                        "target": {
+                          "entity_id": "input_boolean.room_panel_show_hidden_scenes"
+                        }
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "icon": "mdi:eye",
+                      "text": "Hide hidden",
+                      "visibility": [
+                        {
+                          "condition": "state",
+                          "entity": "input_boolean.room_panel_show_hidden_scenes",
+                          "state": "on"
+                        }
+                      ],
+                      "tap_action": {
+                        "action": "perform-action",
+                        "perform_action": "input_boolean.toggle",
+                        "target": {
+                          "entity_id": "input_boolean.room_panel_show_hidden_scenes"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "grid",
+                    "columns": 2,
+                    "square": false
+                  },
+                  "card_param": "cards",
+                  "filter": {
+                    "template": "{% set a='example_backyard' %}{% set H = (state_attr('sensor.room_panel_hidden_items','hidden') or {}).get('scenes', []) %}{% set show = is_state('input_boolean.room_panel_show_hidden_scenes','on') %}{% set ign = label_entities('dashboard_ignore') %}{% set ns = namespace(o=[]) %}{% for e in area_entities(a) | select('match','scene\\.') | reject('in', ign) | sort %}{% set hd = e in H %}{% if show or not hd %}{% set ns.o = ns.o + [{'type':'custom:button-card','entity':e,'show_name':false,'show_icon':false,'show_state':false,'show_label':false,'tap_action':{'action':'none'},'hold_action':{'action':'none'},'custom_fields':{'tile':{'card':{'type':'tile','entity':e,'tap_action':{'action':'perform-action','perform_action':'scene.turn_on','target':{'entity_id':e}},'icon_tap_action':{'action':'perform-action','perform_action':'scene.turn_on','target':{'entity_id':e}}}},'eye':{'card':{'type':'custom:button-card','show_name':false,'icon':('mdi:eye-off' if hd else 'mdi:eye-outline'),'tap_action':{'action':'perform-action','perform_action':'script.room_panel_toggle_hidden','data':{'list':'scenes','entity_id':e}},'hold_action':{'action':'none'},'styles':{'card':[{'background':'none'},{'box-shadow':'none'},{'border':'none'},{'padding':'4px'},{'width':'32px'},{'height':'32px'},{'border-radius':'16px'},{'display':('block' if show else 'none')}],'icon':[{'width':'18px'},{'color':'var(--secondary-text-color)'}]}}}},'styles':{'grid':[{'grid-template-areas':'\"tile\"'},{'grid-template-columns':'1fr'},{'align-items':'center'}],'card':[{'position':'relative'},{'padding':'0'},{'background':'none'},{'box-shadow':'none'},{'border':'none'},{'overflow':'visible'},{'opacity':('0.38' if hd else '1')}],'custom_fields':{'tile':[{'width':'100%'}],'eye':[{'position':'absolute'},{'top':'50%'},{'right':'8px'},{'transform':'translateY(-50%)'},{'z-index':'2'}]}}}] %}{% endif %}{% endfor %}{{ ns.o }}"
+                  },
+                  "else": {
+                    "type": "markdown",
+                    "content": "No scenes in this room."
+                  }
+                },
+                {
+                  "type": "heading",
+                  "heading": "Room lights",
+                  "heading_style": "subtitle",
+                  "icon": "mdi:lightbulb-group-outline"
+                },
+                {
+                  "type": "shortcut",
+                  "label": "All lights off",
+                  "icon": "mdi:lightbulb-off-outline",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "light.turn_off",
+                    "target": {
+                      "area_id": "example_backyard"
+                    }
+                  }
+                },
+                {
+                  "type": "heading",
+                  "heading": "Lights",
+                  "heading_style": "subtitle",
+                  "icon": "mdi:lightbulb-outline"
+                },
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "grid",
+                    "columns": 2,
+                    "square": false
+                  },
+                  "card_param": "cards",
+                  "filter": {
+                    "template": "{% set a='example_backyard' %}{% set groups = states.light | selectattr('attributes.entity_id','defined') | map(attribute='entity_id') | list %}{% set hid = label_entities('dashboard_ignore') %}{% set ns = namespace(o=[]) %}{% for e in area_entities(a) | select('match','light\\.') | reject('in', groups) | reject('in', hid) | reject('is_state','unavailable') | sort %}{% set ns.o = ns.o + [{'type':'custom:button-card','entity':e,'show_name':false,'show_icon':false,'show_state':false,'show_label':false,'tap_action':{'action':'none'},'hold_action':{'action':'none'},'custom_fields':{'tile':{'card':{'type':'tile','entity':e,'features':[{'type':'light-brightness'}],'features_position':'bottom','hide_state':true,'tap_action':{'action':'more-info'},'icon_tap_action':{'action':'toggle'}}},'pct':\"[[[ const s = states[entity.entity_id]; if (!s) return ''; const m = s.attributes.supported_color_modes || []; if (m.length === 0 || (m.length === 1 && m[0] === 'onoff')) return ''; if (s.state !== 'on') return 'Off'; return Math.round((s.attributes.brightness || 0) / 2.55) + '%'; ]]]\"},'styles':{'grid':[{'grid-template-areas':'\"tile\"'},{'grid-template-columns':'1fr'}],'card':[{'position':'relative'},{'padding':'0'},{'background':'none'},{'box-shadow':'none'},{'border':'none'},{'overflow':'visible'}],'custom_fields':{'tile':[{'width':'100%'}],'pct':[{'position':'absolute'},{'right':'24px'},{'bottom':'32px'},{'transform':'translateY(50%)'},{'font-size':'11px'},{'font-weight':'500'},{'color':'var(--primary-text-color)'},{'opacity':'0.7'},{'pointer-events':'none'},{'z-index':'2'}]}}}] %}{% endfor %}{{ ns.o }}"
+                  },
+                  "else": {
+                    "type": "markdown",
+                    "content": "No lights in this room."
+                  }
+                },
+                {
+                  "type": "heading",
+                  "heading": "Media",
+                  "heading_style": "subtitle",
+                  "icon": "mdi:play-circle-outline"
+                },
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "grid",
+                    "columns": 2,
+                    "square": false
+                  },
+                  "card_param": "cards",
+                  "filter": {
+                    "template": "{% set a='example_backyard' %}{% set hid = label_entities('dashboard_ignore') + [] %}{% set ns = namespace(o=[]) %}{% for e in area_entities(a) | select('match','media_player\\.') | reject('in', hid) | reject('is_state','unavailable') | sort %}{% set ns.o = ns.o + [{'type':'tile','entity':e,'features':[{'type':'media-player-volume-slider'}],'tap_action':{'action':'more-info'},'icon_tap_action':{'action':'toggle'}}] %}{% endfor %}{{ ns.o }}"
+                  },
+                  "else": {
+                    "type": "markdown",
+                    "content": "No media players in this room."
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "grid",
+          "cards": [
+            {
+              "type": "custom:expander-card",
+              "title-card": {
+                "type": "area",
+                "area": "example_kitchen",
+                "display_type": "compact",
+                "features": [
+                  {
+                    "type": "area-controls"
+                  }
+                ],
+                "tap_action": {
+                  "action": "none"
+                }
+              },
+              "title-card-clickable": false,
+              "title-card-button-overlay": true,
+              "overlay-margin": "8px",
+              "icon": "mdi:chevron-down",
+              "expanded": false,
+              "storage-id": "room_panel_example_kitchen",
+              "padding": "12px",
+              "child-padding": "0",
+              "expanded-gap": "12px",
+              "clear": false,
+              "expander-card-background": "color-mix(in srgb, var(--primary-text-color) 5%, transparent)",
+              "grid_options": {
+                "columns": "full"
+              },
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Scenes",
+                  "heading_style": "subtitle",
+                  "icon": "mdi:palette-outline",
+                  "badges": [
+                    {
+                      "type": "button",
+                      "icon": "mdi:eye-off-outline",
+                      "text": "Show hidden",
+                      "visibility": [
+                        {
+                          "condition": "state",
+                          "entity": "input_boolean.room_panel_show_hidden_scenes",
+                          "state": "off"
+                        }
+                      ],
+                      "tap_action": {
+                        "action": "perform-action",
+                        "perform_action": "input_boolean.toggle",
+                        "target": {
+                          "entity_id": "input_boolean.room_panel_show_hidden_scenes"
+                        }
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "icon": "mdi:eye",
+                      "text": "Hide hidden",
+                      "visibility": [
+                        {
+                          "condition": "state",
+                          "entity": "input_boolean.room_panel_show_hidden_scenes",
+                          "state": "on"
+                        }
+                      ],
+                      "tap_action": {
+                        "action": "perform-action",
+                        "perform_action": "input_boolean.toggle",
+                        "target": {
+                          "entity_id": "input_boolean.room_panel_show_hidden_scenes"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "grid",
+                    "columns": 2,
+                    "square": false
+                  },
+                  "card_param": "cards",
+                  "filter": {
+                    "template": "{% set a='example_kitchen' %}{% set H = (state_attr('sensor.room_panel_hidden_items','hidden') or {}).get('scenes', []) %}{% set show = is_state('input_boolean.room_panel_show_hidden_scenes','on') %}{% set ign = label_entities('dashboard_ignore') %}{% set ns = namespace(o=[]) %}{% for e in area_entities(a) | select('match','scene\\.') | reject('in', ign) | sort %}{% set hd = e in H %}{% if show or not hd %}{% set ns.o = ns.o + [{'type':'custom:button-card','entity':e,'show_name':false,'show_icon':false,'show_state':false,'show_label':false,'tap_action':{'action':'none'},'hold_action':{'action':'none'},'custom_fields':{'tile':{'card':{'type':'tile','entity':e,'tap_action':{'action':'perform-action','perform_action':'scene.turn_on','target':{'entity_id':e}},'icon_tap_action':{'action':'perform-action','perform_action':'scene.turn_on','target':{'entity_id':e}}}},'eye':{'card':{'type':'custom:button-card','show_name':false,'icon':('mdi:eye-off' if hd else 'mdi:eye-outline'),'tap_action':{'action':'perform-action','perform_action':'script.room_panel_toggle_hidden','data':{'list':'scenes','entity_id':e}},'hold_action':{'action':'none'},'styles':{'card':[{'background':'none'},{'box-shadow':'none'},{'border':'none'},{'padding':'4px'},{'width':'32px'},{'height':'32px'},{'border-radius':'16px'},{'display':('block' if show else 'none')}],'icon':[{'width':'18px'},{'color':'var(--secondary-text-color)'}]}}}},'styles':{'grid':[{'grid-template-areas':'\"tile\"'},{'grid-template-columns':'1fr'},{'align-items':'center'}],'card':[{'position':'relative'},{'padding':'0'},{'background':'none'},{'box-shadow':'none'},{'border':'none'},{'overflow':'visible'},{'opacity':('0.38' if hd else '1')}],'custom_fields':{'tile':[{'width':'100%'}],'eye':[{'position':'absolute'},{'top':'50%'},{'right':'8px'},{'transform':'translateY(-50%)'},{'z-index':'2'}]}}}] %}{% endif %}{% endfor %}{{ ns.o }}"
+                  },
+                  "else": {
+                    "type": "markdown",
+                    "content": "No scenes in this room."
+                  }
+                },
+                {
+                  "type": "heading",
+                  "heading": "Room lights",
+                  "heading_style": "subtitle",
+                  "icon": "mdi:lightbulb-group-outline"
+                },
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "state",
+                      "entity": "input_select.example_kitchen_light_mode",
+                      "state": "White"
+                    }
+                  ],
+                  "card": {
+                    "type": "vertical-stack",
+                    "cards": [
+                      {
+                        "type": "tile",
+                        "entity": "input_select.example_kitchen_light_mode",
+                        "name": "Light mode",
+                        "icon": "mdi:white-balance-sunny",
+                        "tap_action": {
+                          "action": "perform-action",
+                          "perform_action": "input_select.select_option",
+                          "target": {
+                            "entity_id": "input_select.example_kitchen_light_mode"
+                          },
+                          "data": {
+                            "option": "Colour"
+                          }
+                        },
+                        "icon_tap_action": {
+                          "action": "perform-action",
+                          "perform_action": "input_select.select_option",
+                          "target": {
+                            "entity_id": "input_select.example_kitchen_light_mode"
+                          },
+                          "data": {
+                            "option": "Colour"
+                          }
+                        }
+                      },
+                      {
+                        "type": "grid",
+                        "columns": 3,
+                        "square": false,
+                        "cards": [
+                          {
+                            "type": "shortcut",
+                            "label": "Warm",
+                            "icon": "mdi:weather-sunset",
+                            "tap_action": {
+                              "action": "perform-action",
+                              "perform_action": "light.turn_on",
+                              "target": {
+                                "entity_id": "light.example_kitchen_lights"
+                              },
+                              "data": {
+                                "color_temp_kelvin": 2700
+                              }
+                            }
+                          },
+                          {
+                            "type": "shortcut",
+                            "label": "Daylight",
+                            "icon": "mdi:white-balance-sunny",
+                            "tap_action": {
+                              "action": "perform-action",
+                              "perform_action": "light.turn_on",
+                              "target": {
+                                "entity_id": "light.example_kitchen_lights"
+                              },
+                              "data": {
+                                "color_temp_kelvin": 4000
+                              }
+                            }
+                          },
+                          {
+                            "type": "shortcut",
+                            "label": "Cool",
+                            "icon": "mdi:snowflake",
+                            "tap_action": {
+                              "action": "perform-action",
+                              "perform_action": "light.turn_on",
+                              "target": {
+                                "entity_id": "light.example_kitchen_lights"
+                              },
+                              "data": {
+                                "color_temp_kelvin": 6000
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "custom:button-card",
+                        "entity": "light.example_kitchen_lights",
+                        "show_name": false,
+                        "show_icon": false,
+                        "show_state": false,
+                        "show_label": false,
+                        "tap_action": {
+                          "action": "none"
+                        },
+                        "hold_action": {
+                          "action": "none"
+                        },
+                        "custom_fields": {
+                          "tile": {
+                            "card": {
+                              "type": "tile",
+                              "name": "Brightness",
+                              "features": [
+                                {
+                                  "type": "light-brightness"
+                                }
+                              ],
+                              "tap_action": {
+                                "action": "more-info"
+                              },
+                              "entity": "light.example_kitchen_lights",
+                              "hide_state": true
+                            }
+                          },
+                          "pct": "[[[ const s = states[entity.entity_id]; if (!s || s.state === 'unavailable') return ''; if (s.state !== 'on') return 'Off'; return Math.round((s.attributes.brightness || 0) / 2.55) + '%'; ]]]"
+                        },
+                        "styles": {
+                          "grid": [
+                            {
+                              "grid-template-areas": "\"tile\""
+                            },
+                            {
+                              "grid-template-columns": "1fr"
+                            }
+                          ],
+                          "card": [
+                            {
+                              "position": "relative"
+                            },
+                            {
+                              "padding": "0"
+                            },
+                            {
+                              "background": "none"
+                            },
+                            {
+                              "box-shadow": "none"
+                            },
+                            {
+                              "border": "none"
+                            },
+                            {
+                              "overflow": "visible"
+                            }
+                          ],
+                          "custom_fields": {
+                            "tile": [
+                              {
+                                "width": "100%"
+                              }
+                            ],
+                            "pct": [
+                              {
+                                "position": "absolute"
+                              },
+                              {
+                                "top": "28px"
+                              },
+                              {
+                                "transform": "translateY(-50%)"
+                              },
+                              {
+                                "right": "16px"
+                              },
+                              {
+                                "font-size": "11px"
+                              },
+                              {
+                                "color": "var(--secondary-text-color)"
+                              },
+                              {
+                                "opacity": "0.7"
+                              },
+                              {
+                                "pointer-events": "none"
+                              },
+                              {
+                                "z-index": "2"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        "type": "shortcut",
+                        "label": "All lights off",
+                        "icon": "mdi:lightbulb-off-outline",
+                        "tap_action": {
+                          "action": "perform-action",
+                          "perform_action": "light.turn_off",
+                          "target": {
+                            "area_id": "example_kitchen"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "state",
+                      "entity": "input_select.example_kitchen_light_mode",
+                      "state": "Colour"
+                    }
+                  ],
+                  "card": {
+                    "type": "vertical-stack",
+                    "cards": [
+                      {
+                        "type": "tile",
+                        "entity": "input_select.example_kitchen_light_mode",
+                        "name": "Light mode",
+                        "icon": "mdi:palette",
+                        "tap_action": {
+                          "action": "perform-action",
+                          "perform_action": "input_select.select_option",
+                          "target": {
+                            "entity_id": "input_select.example_kitchen_light_mode"
+                          },
+                          "data": {
+                            "option": "White"
+                          }
+                        },
+                        "icon_tap_action": {
+                          "action": "perform-action",
+                          "perform_action": "input_select.select_option",
+                          "target": {
+                            "entity_id": "input_select.example_kitchen_light_mode"
+                          },
+                          "data": {
+                            "option": "White"
+                          }
+                        }
+                      },
+                      {
+                        "type": "custom:button-card",
+                        "entity": "light.example_kitchen_lights",
+                        "show_name": false,
+                        "show_icon": false,
+                        "show_state": false,
+                        "show_label": false,
+                        "tap_action": {
+                          "action": "none"
+                        },
+                        "hold_action": {
+                          "action": "none"
+                        },
+                        "custom_fields": {
+                          "tile": {
+                            "card": {
+                              "type": "tile",
+                              "name": "Colour (tap for wheel)",
+                              "icon": "mdi:palette",
+                              "features": [
+                                {
+                                  "type": "light-color-favorites"
+                                },
+                                {
+                                  "type": "light-brightness"
+                                }
+                              ],
+                              "tap_action": {
+                                "action": "more-info"
+                              },
+                              "entity": "light.example_kitchen_lights",
+                              "hide_state": true
+                            }
+                          },
+                          "pct": "[[[ const s = states[entity.entity_id]; if (!s || s.state === 'unavailable') return ''; if (s.state !== 'on') return 'Off'; return Math.round((s.attributes.brightness || 0) / 2.55) + '%'; ]]]"
+                        },
+                        "styles": {
+                          "grid": [
+                            {
+                              "grid-template-areas": "\"tile\""
+                            },
+                            {
+                              "grid-template-columns": "1fr"
+                            }
+                          ],
+                          "card": [
+                            {
+                              "position": "relative"
+                            },
+                            {
+                              "padding": "0"
+                            },
+                            {
+                              "background": "none"
+                            },
+                            {
+                              "box-shadow": "none"
+                            },
+                            {
+                              "border": "none"
+                            },
+                            {
+                              "overflow": "visible"
+                            }
+                          ],
+                          "custom_fields": {
+                            "tile": [
+                              {
+                                "width": "100%"
+                              }
+                            ],
+                            "pct": [
+                              {
+                                "position": "absolute"
+                              },
+                              {
+                                "top": "28px"
+                              },
+                              {
+                                "transform": "translateY(-50%)"
+                              },
+                              {
+                                "right": "16px"
+                              },
+                              {
+                                "font-size": "11px"
+                              },
+                              {
+                                "color": "var(--secondary-text-color)"
+                              },
+                              {
+                                "opacity": "0.7"
+                              },
+                              {
+                                "pointer-events": "none"
+                              },
+                              {
+                                "z-index": "2"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        "type": "shortcut",
+                        "label": "All lights off",
+                        "icon": "mdi:lightbulb-off-outline",
+                        "tap_action": {
+                          "action": "perform-action",
+                          "perform_action": "light.turn_off",
+                          "target": {
+                            "area_id": "example_kitchen"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "heading",
+                  "heading": "Lights",
+                  "heading_style": "subtitle",
+                  "icon": "mdi:lightbulb-outline"
+                },
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "grid",
+                    "columns": 2,
+                    "square": false
+                  },
+                  "card_param": "cards",
+                  "filter": {
+                    "template": "{% set a='example_kitchen' %}{% set groups = states.light | selectattr('attributes.entity_id','defined') | map(attribute='entity_id') | list %}{% set hid = label_entities('dashboard_ignore') %}{% set ns = namespace(o=[]) %}{% for e in area_entities(a) | select('match','light\\.') | reject('in', groups) | reject('in', hid) | reject('is_state','unavailable') | sort %}{% set ns.o = ns.o + [{'type':'custom:button-card','entity':e,'show_name':false,'show_icon':false,'show_state':false,'show_label':false,'tap_action':{'action':'none'},'hold_action':{'action':'none'},'custom_fields':{'tile':{'card':{'type':'tile','entity':e,'features':[{'type':'light-brightness'}],'features_position':'bottom','hide_state':true,'tap_action':{'action':'more-info'},'icon_tap_action':{'action':'toggle'}}},'pct':\"[[[ const s = states[entity.entity_id]; if (!s) return ''; const m = s.attributes.supported_color_modes || []; if (m.length === 0 || (m.length === 1 && m[0] === 'onoff')) return ''; if (s.state !== 'on') return 'Off'; return Math.round((s.attributes.brightness || 0) / 2.55) + '%'; ]]]\"},'styles':{'grid':[{'grid-template-areas':'\"tile\"'},{'grid-template-columns':'1fr'}],'card':[{'position':'relative'},{'padding':'0'},{'background':'none'},{'box-shadow':'none'},{'border':'none'},{'overflow':'visible'}],'custom_fields':{'tile':[{'width':'100%'}],'pct':[{'position':'absolute'},{'right':'24px'},{'bottom':'32px'},{'transform':'translateY(50%)'},{'font-size':'11px'},{'font-weight':'500'},{'color':'var(--primary-text-color)'},{'opacity':'0.7'},{'pointer-events':'none'},{'z-index':'2'}]}}}] %}{% endfor %}{{ ns.o }}"
+                  },
+                  "else": {
+                    "type": "markdown",
+                    "content": "No lights in this room."
+                  }
+                },
+                {
+                  "type": "heading",
+                  "heading": "Media",
+                  "heading_style": "subtitle",
+                  "icon": "mdi:play-circle-outline"
+                },
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "grid",
+                    "columns": 2,
+                    "square": false
+                  },
+                  "card_param": "cards",
+                  "filter": {
+                    "template": "{% set a='example_kitchen' %}{% set hid = label_entities('dashboard_ignore') + [] %}{% set ns = namespace(o=[]) %}{% for e in area_entities(a) | select('match','media_player\\.') | reject('in', hid) | reject('is_state','unavailable') | sort %}{% set ns.o = ns.o + [{'type':'tile','entity':e,'features':[{'type':'media-player-volume-slider'}],'tap_action':{'action':'more-info'},'icon_tap_action':{'action':'toggle'}}] %}{% endfor %}{{ ns.o }}"
+                  },
+                  "else": {
+                    "type": "markdown",
+                    "content": "No media players in this room."
+                  }
+                }
+              ]
+            },
+            {
+              "type": "custom:expander-card",
+              "title-card": {
+                "type": "area",
+                "area": "example_office",
+                "display_type": "compact",
+                "features": [
+                  {
+                    "type": "area-controls"
+                  }
+                ],
+                "tap_action": {
+                  "action": "none"
+                }
+              },
+              "title-card-clickable": false,
+              "title-card-button-overlay": true,
+              "overlay-margin": "8px",
+              "icon": "mdi:chevron-down",
+              "expanded": false,
+              "storage-id": "room_panel_example_office",
+              "padding": "12px",
+              "child-padding": "0",
+              "expanded-gap": "12px",
+              "clear": false,
+              "expander-card-background": "color-mix(in srgb, var(--primary-text-color) 5%, transparent)",
+              "grid_options": {
+                "columns": "full"
+              },
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Scenes",
+                  "heading_style": "subtitle",
+                  "icon": "mdi:palette-outline",
+                  "badges": [
+                    {
+                      "type": "button",
+                      "icon": "mdi:eye-off-outline",
+                      "text": "Show hidden",
+                      "visibility": [
+                        {
+                          "condition": "state",
+                          "entity": "input_boolean.room_panel_show_hidden_scenes",
+                          "state": "off"
+                        }
+                      ],
+                      "tap_action": {
+                        "action": "perform-action",
+                        "perform_action": "input_boolean.toggle",
+                        "target": {
+                          "entity_id": "input_boolean.room_panel_show_hidden_scenes"
+                        }
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "icon": "mdi:eye",
+                      "text": "Hide hidden",
+                      "visibility": [
+                        {
+                          "condition": "state",
+                          "entity": "input_boolean.room_panel_show_hidden_scenes",
+                          "state": "on"
+                        }
+                      ],
+                      "tap_action": {
+                        "action": "perform-action",
+                        "perform_action": "input_boolean.toggle",
+                        "target": {
+                          "entity_id": "input_boolean.room_panel_show_hidden_scenes"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "grid",
+                    "columns": 2,
+                    "square": false
+                  },
+                  "card_param": "cards",
+                  "filter": {
+                    "template": "{% set a='example_office' %}{% set H = (state_attr('sensor.room_panel_hidden_items','hidden') or {}).get('scenes', []) %}{% set show = is_state('input_boolean.room_panel_show_hidden_scenes','on') %}{% set ign = label_entities('dashboard_ignore') %}{% set ns = namespace(o=[]) %}{% for e in area_entities(a) | select('match','scene\\.') | reject('in', ign) | sort %}{% set hd = e in H %}{% if show or not hd %}{% set ns.o = ns.o + [{'type':'custom:button-card','entity':e,'show_name':false,'show_icon':false,'show_state':false,'show_label':false,'tap_action':{'action':'none'},'hold_action':{'action':'none'},'custom_fields':{'tile':{'card':{'type':'tile','entity':e,'tap_action':{'action':'perform-action','perform_action':'scene.turn_on','target':{'entity_id':e}},'icon_tap_action':{'action':'perform-action','perform_action':'scene.turn_on','target':{'entity_id':e}}}},'eye':{'card':{'type':'custom:button-card','show_name':false,'icon':('mdi:eye-off' if hd else 'mdi:eye-outline'),'tap_action':{'action':'perform-action','perform_action':'script.room_panel_toggle_hidden','data':{'list':'scenes','entity_id':e}},'hold_action':{'action':'none'},'styles':{'card':[{'background':'none'},{'box-shadow':'none'},{'border':'none'},{'padding':'4px'},{'width':'32px'},{'height':'32px'},{'border-radius':'16px'},{'display':('block' if show else 'none')}],'icon':[{'width':'18px'},{'color':'var(--secondary-text-color)'}]}}}},'styles':{'grid':[{'grid-template-areas':'\"tile\"'},{'grid-template-columns':'1fr'},{'align-items':'center'}],'card':[{'position':'relative'},{'padding':'0'},{'background':'none'},{'box-shadow':'none'},{'border':'none'},{'overflow':'visible'},{'opacity':('0.38' if hd else '1')}],'custom_fields':{'tile':[{'width':'100%'}],'eye':[{'position':'absolute'},{'top':'50%'},{'right':'8px'},{'transform':'translateY(-50%)'},{'z-index':'2'}]}}}] %}{% endif %}{% endfor %}{{ ns.o }}"
+                  },
+                  "else": {
+                    "type": "markdown",
+                    "content": "No scenes in this room."
+                  }
+                },
+                {
+                  "type": "heading",
+                  "heading": "Lights",
+                  "heading_style": "subtitle",
+                  "icon": "mdi:lightbulb-outline"
+                },
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "grid",
+                    "columns": 2,
+                    "square": false
+                  },
+                  "card_param": "cards",
+                  "filter": {
+                    "template": "{% set a='example_office' %}{% set groups = states.light | selectattr('attributes.entity_id','defined') | map(attribute='entity_id') | list %}{% set hid = label_entities('dashboard_ignore') %}{% set ns = namespace(o=[]) %}{% for e in area_entities(a) | select('match','light\\.') | reject('in', groups) | reject('in', hid) | reject('is_state','unavailable') | sort %}{% set ns.o = ns.o + [{'type':'custom:button-card','entity':e,'show_name':false,'show_icon':false,'show_state':false,'show_label':false,'tap_action':{'action':'none'},'hold_action':{'action':'none'},'custom_fields':{'tile':{'card':{'type':'tile','entity':e,'features':[{'type':'light-brightness'}],'features_position':'bottom','hide_state':true,'tap_action':{'action':'more-info'},'icon_tap_action':{'action':'toggle'}}},'pct':\"[[[ const s = states[entity.entity_id]; if (!s) return ''; const m = s.attributes.supported_color_modes || []; if (m.length === 0 || (m.length === 1 && m[0] === 'onoff')) return ''; if (s.state !== 'on') return 'Off'; return Math.round((s.attributes.brightness || 0) / 2.55) + '%'; ]]]\"},'styles':{'grid':[{'grid-template-areas':'\"tile\"'},{'grid-template-columns':'1fr'}],'card':[{'position':'relative'},{'padding':'0'},{'background':'none'},{'box-shadow':'none'},{'border':'none'},{'overflow':'visible'}],'custom_fields':{'tile':[{'width':'100%'}],'pct':[{'position':'absolute'},{'right':'24px'},{'bottom':'32px'},{'transform':'translateY(50%)'},{'font-size':'11px'},{'font-weight':'500'},{'color':'var(--primary-text-color)'},{'opacity':'0.7'},{'pointer-events':'none'},{'z-index':'2'}]}}}] %}{% endfor %}{{ ns.o }}"
+                  },
+                  "else": {
+                    "type": "markdown",
+                    "content": "No lights in this room."
+                  }
+                },
+                {
+                  "type": "heading",
+                  "heading": "Media",
+                  "heading_style": "subtitle",
+                  "icon": "mdi:play-circle-outline"
+                },
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "grid",
+                    "columns": 2,
+                    "square": false
+                  },
+                  "card_param": "cards",
+                  "filter": {
+                    "template": "{% set a='example_office' %}{% set hid = label_entities('dashboard_ignore') + [] %}{% set ns = namespace(o=[]) %}{% for e in area_entities(a) | select('match','media_player\\.') | reject('in', hid) | reject('is_state','unavailable') | sort %}{% set ns.o = ns.o + [{'type':'tile','entity':e,'features':[{'type':'media-player-volume-slider'}],'tap_action':{'action':'more-info'},'icon_tap_action':{'action':'toggle'}}] %}{% endfor %}{{ ns.o }}"
+                  },
+                  "else": {
+                    "type": "markdown",
+                    "content": "No media players in this room."
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
