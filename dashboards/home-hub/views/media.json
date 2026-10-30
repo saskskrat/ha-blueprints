@@ -1,0 +1,275 @@
+{
+  "title": "Media",
+  "path": "media",
+  "icon": "mdi:play-circle-outline",
+  "type": "sections",
+  "max_columns": 3,
+  "sections": [
+    {
+      "type": "grid",
+      "column_span": 2,
+      "cards": [
+        {
+          "type": "custom:expander-card",
+          "title-card": {
+            "type": "heading",
+            "heading": "Music Assistant",
+            "icon": "mdi:music"
+          },
+          "title-card-clickable": true,
+          "icon": "mdi:chevron-down",
+          "expanded": true,
+          "storage-id": "__P__media_ma",
+          "padding": "0",
+          "clear": true,
+          "grid_options": {
+            "columns": "full"
+          },
+          "cards": [
+            {
+              "type": "custom:auto-entities",
+              "card": {
+                "type": "custom:mass-player-card",
+                "expressive": true,
+                "default_section": "music_player",
+                "player": {
+                  "layout": {
+                    "controls_layout": "compact"
+                  }
+                }
+              },
+              "card_param": "entities",
+              "filter": {
+                "template": "{% set ns = namespace(out=[]) %}{% for e in integration_entities('music_assistant') | select('match','media_player\\.') %}{% if states(e) not in ['unavailable','unknown'] %}{% set ns.out = ns.out + [{'entity_id': e, 'name': state_attr(e,'friendly_name')}] %}{% endif %}{% endfor %}{{ ns.out }}"
+              }
+            }
+          ]
+        },
+        {
+          "type": "custom:expander-card",
+          "title-card": {
+            "type": "heading",
+            "heading": "All players",
+            "icon": "mdi:speaker-multiple",
+            "badges": [
+              {
+                "type": "entity",
+                "entity": "input_boolean.__P__show_hidden_players",
+                "show_state": false,
+                "show_icon": true,
+                "icon": "mdi:eye-off-outline",
+                "tap_action": {
+                  "action": "toggle"
+                },
+                "visibility": [
+                  {
+                    "condition": "state",
+                    "entity": "input_boolean.__P__show_hidden_players",
+                    "state": "off"
+                  }
+                ]
+              },
+              {
+                "type": "entity",
+                "entity": "input_boolean.__P__show_hidden_players",
+                "show_state": false,
+                "show_icon": true,
+                "icon": "mdi:eye",
+                "color": "primary",
+                "tap_action": {
+                  "action": "toggle"
+                },
+                "visibility": [
+                  {
+                    "condition": "state",
+                    "entity": "input_boolean.__P__show_hidden_players",
+                    "state": "on"
+                  }
+                ]
+              }
+            ]
+          },
+          "title-card-clickable": false,
+          "icon": "mdi:chevron-down",
+          "expanded": true,
+          "storage-id": "__P__media_players",
+          "padding": "0",
+          "clear": true,
+          "grid_options": {
+            "columns": "full"
+          },
+          "cards": [
+            {
+              "type": "custom:auto-entities",
+              "card": {
+                "type": "grid",
+                "columns": 1,
+                "square": false
+              },
+              "card_param": "cards",
+              "filter": {
+                "include": [
+                  {
+                    "integration": "music_assistant",
+                    "domain": "media_player",
+                    "options": {
+                      "type": "custom:button-card",
+                      "show_name": false,
+                      "show_icon": false,
+                      "show_state": false,
+                      "show_label": false,
+                      "triggers_update": [
+                        "sensor.__P__hidden_items",
+                        "input_boolean.__P__show_hidden_players"
+                      ],
+                      "tap_action": {
+                        "action": "none"
+                      },
+                      "hold_action": {
+                        "action": "none"
+                      },
+                      "custom_fields": {
+                        "tile": {
+                          "card": {
+                            "type": "tile",
+                            "entity": "this.entity_id",
+                            "features": [
+                              {
+                                "type": "media-player-playback"
+                              },
+                              {
+                                "type": "media-player-volume-slider"
+                              }
+                            ]
+                          }
+                        },
+                        "eye": {
+                          "card": {
+                            "type": "custom:button-card",
+                            "variables": {
+                              "eid": "this.entity_id"
+                            },
+                            "triggers_update": [
+                              "sensor.__P__hidden_items",
+                              "input_boolean.__P__show_hidden_players"
+                            ],
+                            "show_name": false,
+                            "icon": "[[[ const H=(((states['sensor.__P__hidden_items']||{}).attributes||{}).hidden)||{}; return (H['players']||[]).includes(variables.eid) ? 'mdi:eye-off' : 'mdi:eye-outline'; ]]]",
+                            "tap_action": {
+                              "action": "perform-action",
+                              "perform_action": "script.__P__toggle_hidden",
+                              "data": {
+                                "list": "players",
+                                "entity_id": "this.entity_id"
+                              }
+                            },
+                            "hold_action": {
+                              "action": "none"
+                            },
+                            "styles": {
+                              "card": [
+                                {
+                                  "background": "none"
+                                },
+                                {
+                                  "box-shadow": "none"
+                                },
+                                {
+                                  "border": "none"
+                                },
+                                {
+                                  "padding": "12px"
+                                },
+                                {
+                                  "width": "48px"
+                                },
+                                {
+                                  "height": "48px"
+                                },
+                                {
+                                  "border-radius": "24px"
+                                },
+                                {
+                                  "display": "[[[ return (states['input_boolean.__P__show_hidden_players']||{}).state==='on' ? 'block' : 'none'; ]]]"
+                                }
+                              ],
+                              "icon": [
+                                {
+                                  "width": "24px"
+                                },
+                                {
+                                  "color": "var(--secondary-text-color)"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      },
+                      "styles": {
+                        "grid": [
+                          {
+                            "grid-template-areas": "\"tile eye\""
+                          },
+                          {
+                            "grid-template-columns": "[[[ return (states['input_boolean.__P__show_hidden_players']||{}).state==='on' ? '1fr 48px' : '1fr 0px'; ]]]"
+                          },
+                          {
+                            "column-gap": "8px"
+                          },
+                          {
+                            "align-items": "center"
+                          }
+                        ],
+                        "card": [
+                          {
+                            "padding": "0"
+                          },
+                          {
+                            "background": "none"
+                          },
+                          {
+                            "box-shadow": "none"
+                          },
+                          {
+                            "border": "none"
+                          },
+                          {
+                            "overflow": "visible"
+                          },
+                          {
+                            "display": "[[[ const H=(((states['sensor.__P__hidden_items']||{}).attributes||{}).hidden)||{}; const s=(states['input_boolean.__P__show_hidden_players']||{}).state==='on'; return ((H['players']||[]).includes(entity.entity_id) && !s) ? 'none' : 'block'; ]]]"
+                          },
+                          {
+                            "opacity": "[[[ const H=(((states['sensor.__P__hidden_items']||{}).attributes||{}).hidden)||{}; return (H['players']||[]).includes(entity.entity_id) ? '0.38' : '1'; ]]]"
+                          }
+                        ],
+                        "custom_fields": {
+                          "tile": [
+                            {
+                              "width": "100%"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                ],
+                "exclude": [
+                  {
+                    "state": "unavailable"
+                  },
+                  {
+                    "label": "__IGNORE__"
+                  }
+                ]
+              },
+              "sort": {
+                "method": "name"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

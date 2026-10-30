@@ -1,0 +1,39 @@
+{
+  "title": "Home Hub",
+  "dashboardPath": "home-hub",
+  "flightDashboardPath": "flight-tracker",
+  "prefix": "hub_",
+  "ignoreLabel": "hub_ignore",
+  "mediaExclude": [],
+  "kelvin": { "warm": 2700, "daylight": 4000, "cool": 6000 },
+  "allOffButton": "input_button.example_turn_off_all_lights",
+  "remote": {
+    "mediaPlayer": "media_player.example_tv",
+    "remoteEntity": "remote.example_tv",
+    "deviceFamily": "nvidia-shield",
+    "deviceType": "shield-tv-pro-2019",
+    "apps": ["plex", "youtube", "spotify", "steam-link"]
+  },
+  "flightTracker": {
+    "sensor": "sensor.flightradar24_current_in_area",
+    "rangeKm": 5,
+    "location": null
+  },
+  "rooms": [
+    {
+      "area": "example_living_room",
+      "kind": "color",
+      "lightGroup": "light.example_living_room_lights",
+      "modeHelper": "input_select.example_living_room_light_mode",
+      "expanded": true
+    },
+    {
+      "area": "example_kitchen",
+      "kind": "color",
+      "lightGroup": "light.example_kitchen_lights",
+      "modeHelper": "input_select.example_kitchen_light_mode"
+    },
+    { "area": "example_backyard", "kind": "onoff" },
+    { "area": "example_office", "kind": "none" }
+  ]
+}

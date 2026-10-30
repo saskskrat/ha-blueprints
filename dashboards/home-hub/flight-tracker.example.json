@@ -1,0 +1,100 @@
+{
+  "views": [
+    {
+      "title": "Radar",
+      "path": "radar",
+      "icon": "mdi:radar",
+      "type": "sections",
+      "subview": true,
+      "back_path": "/home-hub/home",
+      "max_columns": 1,
+      "sections": [
+        {
+          "type": "grid",
+          "cards": [
+            {
+              "type": "heading",
+              "heading": "Overhead right now",
+              "heading_style": "title",
+              "icon": "mdi:airplane",
+              "badges": [
+                {
+                  "type": "entity",
+                  "entity": "sensor.flightradar24_current_in_area",
+                  "show_state": true,
+                  "show_name": false,
+                  "icon": "mdi:airplane-marker"
+                },
+                {
+                  "type": "button",
+                  "icon": "mdi:map",
+                  "text": "Map view",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/flight-tracker/map"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "custom:flightradar24-radar-card",
+              "flights_entity": "sensor.flightradar24_current_in_area",
+              "radar": {
+                "range": 5
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Map",
+      "path": "map",
+      "icon": "mdi:map",
+      "type": "sections",
+      "subview": true,
+      "back_path": "/home-hub/home",
+      "max_columns": 1,
+      "sections": [
+        {
+          "type": "grid",
+          "cards": [
+            {
+              "type": "heading",
+              "heading": "Overhead right now",
+              "heading_style": "title",
+              "icon": "mdi:airplane",
+              "badges": [
+                {
+                  "type": "entity",
+                  "entity": "sensor.flightradar24_current_in_area",
+                  "show_state": true,
+                  "show_name": false,
+                  "icon": "mdi:airplane-marker"
+                },
+                {
+                  "type": "button",
+                  "icon": "mdi:radar",
+                  "text": "Radar view",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/flight-tracker/radar"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "custom:flightradar24-radar-card",
+              "flights_entity": "sensor.flightradar24_current_in_area",
+              "radar": {
+                "range": 5,
+                "background_map": "color",
+                "background_map_opacity": 0.9
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

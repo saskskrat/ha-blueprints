@@ -1,0 +1,3585 @@
+{
+  "title": "Home Hub",
+  "views": [
+    {
+      "title": "Home",
+      "path": "home",
+      "icon": "mdi:home-outline",
+      "type": "sections",
+      "max_columns": 2,
+      "sections": [
+        {
+          "type": "grid",
+          "cards": [
+            {
+              "type": "heading",
+              "heading": "Home",
+              "heading_style": "title",
+              "icon": "mdi:home-outline",
+              "badges": [
+                {
+                  "type": "button",
+                  "icon": "mdi:remote-tv",
+                  "text": "TV remote",
+                  "visibility": [
+                    {
+                      "condition": "state",
+                      "entity": "remote.example_tv",
+                      "state": "off"
+                    }
+                  ],
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/home-hub/media"
+                  }
+                },
+                {
+                  "type": "button",
+                  "icon": "mdi:lightbulb-group-off",
+                  "text": "All off",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "input_button.press",
+                    "target": {
+                      "entity_id": "input_button.example_turn_off_all_lights"
+                    },
+                    "confirmation": {
+                      "text": "Turn off all lights?"
+                    }
+                  }
+                },
+                {
+                  "type": "entity",
+                  "entity": "sensor.flightradar24_current_in_area",
+                  "icon": "mdi:airplane",
+                  "show_state": true,
+                  "show_name": false,
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/flight-tracker/radar"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "custom:auto-entities",
+              "card": {
+                "type": "grid",
+                "columns": 2,
+                "square": false
+              },
+              "card_param": "cards",
+              "filter": {
+                "template": "{% set h = (state_attr('sensor.hub_hidden_items','hidden') or {}).get('people', []) %}{% set ns = namespace(o=[]) %}{% for p in states.person | sort(attribute='name') %}{% if p.entity_id not in h %}{% set ns.o = ns.o + [{'type': 'tile', 'entity': p.entity_id, 'state_content': ['state', 'last_changed']}] %}{% endif %}{% endfor %}{{ ns.o }}"
+              }
+            },
+            {
+              "type": "custom:expander-card",
+              "title-card": {
+                "type": "heading",
+                "heading": "On right now",
+                "icon": "mdi:power"
+              },
+              "title-card-clickable": true,
+              "icon": "mdi:chevron-down",
+              "expanded": true,
+              "storage-id": "hub_home_on_now",
+              "padding": "0",
+              "clear": true,
+              "grid_options": {
+                "columns": "full"
+              },
+              "cards": [
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "grid",
+                    "columns": 2,
+                    "square": false
+                  },
+                  "card_param": "cards",
+                  "filter": {
+                    "include": [
+                      {
+                        "domain": "light",
+                        "state": "on",
+                        "options": {
+                          "type": "tile",
+                          "features": [
+                            {
+                              "type": "light-brightness"
+                            }
+                          ],
+                          "features_position": "bottom"
+                        }
+                      },
+                      {
+                        "domain": "media_player",
+                        "state": "playing",
+                        "options": {
+                          "type": "tile",
+                          "features": [
+                            {
+                              "type": "media-player-playback"
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "exclude": [
+                      {
+                        "label": "hub_ignore"
+                      }
+                    ]
+                  },
+                  "sort": {
+                    "method": "name"
+                  },
+                  "else": {
+                    "type": "markdown",
+                    "content": "Everything is off."
+                  }
+                }
+              ]
+            },
+            {
+              "type": "custom:expander-card",
+              "title-card": {
+                "type": "area",
+                "area": "example_living_room",
+                "display_type": "compact",
+                "features": [
+                  {
+                    "type": "area-controls"
+                  }
+                ],
+                "tap_action": {
+                  "action": "none"
+                }
+              },
+              "title-card-clickable": false,
+              "title-card-button-overlay": true,
+              "overlay-margin": "8px",
+              "icon": "mdi:chevron-down",
+              "expanded": true,
+              "storage-id": "room_panel_example_living_room",
+              "padding": "12px",
+              "child-padding": "0",
+              "expanded-gap": "12px",
+              "clear": false,
+              "expander-card-background": "color-mix(in srgb, var(--primary-text-color) 5%, transparent)",
+              "grid_options": {
+                "columns": "full"
+              },
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Scenes",
+                  "heading_style": "subtitle",
+                  "icon": "mdi:palette-outline",
+                  "badges": [
+                    {
+                      "type": "button",
+                      "icon": "mdi:eye-off-outline",
+                      "text": "Show hidden",
+                      "visibility": [
+                        {
+                          "condition": "state",
+                          "entity": "input_boolean.hub_show_hidden_room_scenes",
+                          "state": "off"
+                        }
+                      ],
+                      "tap_action": {
+                        "action": "perform-action",
+                        "perform_action": "input_boolean.toggle",
+                        "target": {
+                          "entity_id": "input_boolean.hub_show_hidden_room_scenes"
+                        }
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "icon": "mdi:eye",
+                      "text": "Hide hidden",
+                      "visibility": [
+                        {
+                          "condition": "state",
+                          "entity": "input_boolean.hub_show_hidden_room_scenes",
+                          "state": "on"
+                        }
+                      ],
+                      "tap_action": {
+                        "action": "perform-action",
+                        "perform_action": "input_boolean.toggle",
+                        "target": {
+                          "entity_id": "input_boolean.hub_show_hidden_room_scenes"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "grid",
+                    "columns": 2,
+                    "square": false
+                  },
+                  "card_param": "cards",
+                  "filter": {
+                    "template": "{% set a='example_living_room' %}{% set H = (state_attr('sensor.hub_hidden_items','hidden') or {}).get('room_scenes', []) %}{% set show = is_state('input_boolean.hub_show_hidden_room_scenes','on') %}{% set ign = label_entities('hub_ignore') %}{% set ns = namespace(o=[]) %}{% for e in area_entities(a) | select('match','scene\\.') | reject('in', ign) | sort %}{% set hd = e in H %}{% if show or not hd %}{% set ns.o = ns.o + [{'type':'custom:button-card','entity':e,'show_name':false,'show_icon':false,'show_state':false,'show_label':false,'tap_action':{'action':'none'},'hold_action':{'action':'none'},'custom_fields':{'tile':{'card':{'type':'tile','entity':e,'tap_action':{'action':'perform-action','perform_action':'scene.turn_on','target':{'entity_id':e}},'icon_tap_action':{'action':'perform-action','perform_action':'scene.turn_on','target':{'entity_id':e}}}},'eye':{'card':{'type':'custom:button-card','show_name':false,'icon':('mdi:eye-off' if hd else 'mdi:eye-outline'),'tap_action':{'action':'perform-action','perform_action':'script.hub_toggle_hidden','data':{'list':'room_scenes','entity_id':e}},'hold_action':{'action':'none'},'styles':{'card':[{'background':'none'},{'box-shadow':'none'},{'border':'none'},{'padding':'4px'},{'width':'32px'},{'height':'32px'},{'border-radius':'16px'},{'display':('block' if show else 'none')}],'icon':[{'width':'18px'},{'color':'var(--secondary-text-color)'}]}}}},'styles':{'grid':[{'grid-template-areas':'\"tile\"'},{'grid-template-columns':'1fr'},{'align-items':'center'}],'card':[{'position':'relative'},{'padding':'0'},{'background':'none'},{'box-shadow':'none'},{'border':'none'},{'overflow':'visible'},{'opacity':('0.38' if hd else '1')}],'custom_fields':{'tile':[{'width':'100%'}],'eye':[{'position':'absolute'},{'top':'50%'},{'right':'8px'},{'transform':'translateY(-50%)'},{'z-index':'2'}]}}}] %}{% endif %}{% endfor %}{{ ns.o }}"
+                  },
+                  "else": {
+                    "type": "markdown",
+                    "content": "No scenes in this room."
+                  }
+                },
+                {
+                  "type": "heading",
+                  "heading": "Room lights",
+                  "heading_style": "subtitle",
+                  "icon": "mdi:lightbulb-group-outline"
+                },
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "state",
+                      "entity": "input_select.example_living_room_light_mode",
+                      "state": "White"
+                    }
+                  ],
+                  "card": {
+                    "type": "vertical-stack",
+                    "cards": [
+                      {
+                        "type": "tile",
+                        "entity": "input_select.example_living_room_light_mode",
+                        "name": "Light mode",
+                        "icon": "mdi:white-balance-sunny",
+                        "tap_action": {
+                          "action": "perform-action",
+                          "perform_action": "input_select.select_option",
+                          "target": {
+                            "entity_id": "input_select.example_living_room_light_mode"
+                          },
+                          "data": {
+                            "option": "Colour"
+                          }
+                        },
+                        "icon_tap_action": {
+                          "action": "perform-action",
+                          "perform_action": "input_select.select_option",
+                          "target": {
+                            "entity_id": "input_select.example_living_room_light_mode"
+                          },
+                          "data": {
+                            "option": "Colour"
+                          }
+                        }
+                      },
+                      {
+                        "type": "grid",
+                        "columns": 3,
+                        "square": false,
+                        "cards": [
+                          {
+                            "type": "shortcut",
+                            "label": "Warm",
+                            "icon": "mdi:weather-sunset",
+                            "tap_action": {
+                              "action": "perform-action",
+                              "perform_action": "light.turn_on",
+                              "target": {
+                                "entity_id": "light.example_living_room_lights"
+                              },
+                              "data": {
+                                "color_temp_kelvin": 2700
+                              }
+                            }
+                          },
+                          {
+                            "type": "shortcut",
+                            "label": "Daylight",
+                            "icon": "mdi:white-balance-sunny",
+                            "tap_action": {
+                              "action": "perform-action",
+                              "perform_action": "light.turn_on",
+                              "target": {
+                                "entity_id": "light.example_living_room_lights"
+                              },
+                              "data": {
+                                "color_temp_kelvin": 4000
+                              }
+                            }
+                          },
+                          {
+                            "type": "shortcut",
+                            "label": "Cool",
+                            "icon": "mdi:snowflake",
+                            "tap_action": {
+                              "action": "perform-action",
+                              "perform_action": "light.turn_on",
+                              "target": {
+                                "entity_id": "light.example_living_room_lights"
+                              },
+                              "data": {
+                                "color_temp_kelvin": 6000
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "custom:button-card",
+                        "entity": "light.example_living_room_lights",
+                        "show_name": false,
+                        "show_icon": false,
+                        "show_state": false,
+                        "show_label": false,
+                        "tap_action": {
+                          "action": "none"
+                        },
+                        "hold_action": {
+                          "action": "none"
+                        },
+                        "custom_fields": {
+                          "tile": {
+                            "card": {
+                              "type": "tile",
+                              "name": "Brightness",
+                              "features": [
+                                {
+                                  "type": "light-brightness"
+                                }
+                              ],
+                              "tap_action": {
+                                "action": "more-info"
+                              },
+                              "entity": "light.example_living_room_lights",
+                              "hide_state": true
+                            }
+                          },
+                          "pct": "[[[ const s = states[entity.entity_id]; if (!s || s.state === 'unavailable') return ''; if (s.state !== 'on') return 'Off'; return Math.round((s.attributes.brightness || 0) / 2.55) + '%'; ]]]"
+                        },
+                        "styles": {
+                          "grid": [
+                            {
+                              "grid-template-areas": "\"tile\""
+                            },
+                            {
+                              "grid-template-columns": "1fr"
+                            }
+                          ],
+                          "card": [
+                            {
+                              "position": "relative"
+                            },
+                            {
+                              "padding": "0"
+                            },
+                            {
+                              "background": "none"
+                            },
+                            {
+                              "box-shadow": "none"
+                            },
+                            {
+                              "border": "none"
+                            },
+                            {
+                              "overflow": "visible"
+                            }
+                          ],
+                          "custom_fields": {
+                            "tile": [
+                              {
+                                "width": "100%"
+                              }
+                            ],
+                            "pct": [
+                              {
+                                "position": "absolute"
+                              },
+                              {
+                                "top": "28px"
+                              },
+                              {
+                                "transform": "translateY(-50%)"
+                              },
+                              {
+                                "right": "16px"
+                              },
+                              {
+                                "font-size": "11px"
+                              },
+                              {
+                                "color": "var(--secondary-text-color)"
+                              },
+                              {
+                                "opacity": "0.7"
+                              },
+                              {
+                                "pointer-events": "none"
+                              },
+                              {
+                                "z-index": "2"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        "type": "shortcut",
+                        "label": "All lights off",
+                        "icon": "mdi:lightbulb-off-outline",
+                        "tap_action": {
+                          "action": "perform-action",
+                          "perform_action": "light.turn_off",
+                          "target": {
+                            "area_id": "example_living_room"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "state",
+                      "entity": "input_select.example_living_room_light_mode",
+                      "state": "Colour"
+                    }
+                  ],
+                  "card": {
+                    "type": "vertical-stack",
+                    "cards": [
+                      {
+                        "type": "tile",
+                        "entity": "input_select.example_living_room_light_mode",
+                        "name": "Light mode",
+                        "icon": "mdi:palette",
+                        "tap_action": {
+                          "action": "perform-action",
+                          "perform_action": "input_select.select_option",
+                          "target": {
+                            "entity_id": "input_select.example_living_room_light_mode"
+                          },
+                          "data": {
+                            "option": "White"
+                          }
+                        },
+                        "icon_tap_action": {
+                          "action": "perform-action",
+                          "perform_action": "input_select.select_option",
+                          "target": {
+                            "entity_id": "input_select.example_living_room_light_mode"
+                          },
+                          "data": {
+                            "option": "White"
+                          }
+                        }
+                      },
+                      {
+                        "type": "custom:button-card",
+                        "entity": "light.example_living_room_lights",
+                        "show_name": false,
+                        "show_icon": false,
+                        "show_state": false,
+                        "show_label": false,
+                        "tap_action": {
+                          "action": "none"
+                        },
+                        "hold_action": {
+                          "action": "none"
+                        },
+                        "custom_fields": {
+                          "tile": {
+                            "card": {
+                              "type": "tile",
+                              "name": "Colour (tap for wheel)",
+                              "icon": "mdi:palette",
+                              "features": [
+                                {
+                                  "type": "light-color-favorites"
+                                },
+                                {
+                                  "type": "light-brightness"
+                                }
+                              ],
+                              "tap_action": {
+                                "action": "more-info"
+                              },
+                              "entity": "light.example_living_room_lights",
+                              "hide_state": true
+                            }
+                          },
+                          "pct": "[[[ const s = states[entity.entity_id]; if (!s || s.state === 'unavailable') return ''; if (s.state !== 'on') return 'Off'; return Math.round((s.attributes.brightness || 0) / 2.55) + '%'; ]]]"
+                        },
+                        "styles": {
+                          "grid": [
+                            {
+                              "grid-template-areas": "\"tile\""
+                            },
+                            {
+                              "grid-template-columns": "1fr"
+                            }
+                          ],
+                          "card": [
+                            {
+                              "position": "relative"
+                            },
+                            {
+                              "padding": "0"
+                            },
+                            {
+                              "background": "none"
+                            },
+                            {
+                              "box-shadow": "none"
+                            },
+                            {
+                              "border": "none"
+                            },
+                            {
+                              "overflow": "visible"
+                            }
+                          ],
+                          "custom_fields": {
+                            "tile": [
+                              {
+                                "width": "100%"
+                              }
+                            ],
+                            "pct": [
+                              {
+                                "position": "absolute"
+                              },
+                              {
+                                "top": "28px"
+                              },
+                              {
+                                "transform": "translateY(-50%)"
+                              },
+                              {
+                                "right": "16px"
+                              },
+                              {
+                                "font-size": "11px"
+                              },
+                              {
+                                "color": "var(--secondary-text-color)"
+                              },
+                              {
+                                "opacity": "0.7"
+                              },
+                              {
+                                "pointer-events": "none"
+                              },
+                              {
+                                "z-index": "2"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        "type": "shortcut",
+                        "label": "All lights off",
+                        "icon": "mdi:lightbulb-off-outline",
+                        "tap_action": {
+                          "action": "perform-action",
+                          "perform_action": "light.turn_off",
+                          "target": {
+                            "area_id": "example_living_room"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "heading",
+                  "heading": "Lights",
+                  "heading_style": "subtitle",
+                  "icon": "mdi:lightbulb-outline"
+                },
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "grid",
+                    "columns": 2,
+                    "square": false
+                  },
+                  "card_param": "cards",
+                  "filter": {
+                    "template": "{% set a='example_living_room' %}{% set groups = states.light | selectattr('attributes.entity_id','defined') | map(attribute='entity_id') | list %}{% set hid = label_entities('hub_ignore') %}{% set ns = namespace(o=[]) %}{% for e in area_entities(a) | select('match','light\\.') | reject('in', groups) | reject('in', hid) | reject('is_state','unavailable') | sort %}{% set ns.o = ns.o + [{'type':'custom:button-card','entity':e,'show_name':false,'show_icon':false,'show_state':false,'show_label':false,'tap_action':{'action':'none'},'hold_action':{'action':'none'},'custom_fields':{'tile':{'card':{'type':'tile','entity':e,'features':[{'type':'light-brightness'}],'features_position':'bottom','hide_state':true,'tap_action':{'action':'more-info'},'icon_tap_action':{'action':'toggle'}}},'pct':\"[[[ const s = states[entity.entity_id]; if (!s) return ''; const m = s.attributes.supported_color_modes || []; if (m.length === 0 || (m.length === 1 && m[0] === 'onoff')) return ''; if (s.state !== 'on') return 'Off'; return Math.round((s.attributes.brightness || 0) / 2.55) + '%'; ]]]\"},'styles':{'grid':[{'grid-template-areas':'\"tile\"'},{'grid-template-columns':'1fr'}],'card':[{'position':'relative'},{'padding':'0'},{'background':'none'},{'box-shadow':'none'},{'border':'none'},{'overflow':'visible'}],'custom_fields':{'tile':[{'width':'100%'}],'pct':[{'position':'absolute'},{'right':'24px'},{'bottom':'32px'},{'transform':'translateY(50%)'},{'font-size':'11px'},{'font-weight':'500'},{'color':'var(--primary-text-color)'},{'opacity':'0.7'},{'pointer-events':'none'},{'z-index':'2'}]}}}] %}{% endfor %}{{ ns.o }}"
+                  },
+                  "else": {
+                    "type": "markdown",
+                    "content": "No lights in this room."
+                  }
+                },
+                {
+                  "type": "heading",
+                  "heading": "Media",
+                  "heading_style": "subtitle",
+                  "icon": "mdi:play-circle-outline"
+                },
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "grid",
+                    "columns": 2,
+                    "square": false
+                  },
+                  "card_param": "cards",
+                  "filter": {
+                    "template": "{% set a='example_living_room' %}{% set hid = label_entities('hub_ignore') + [] %}{% set ns = namespace(o=[]) %}{% for e in area_entities(a) | select('match','media_player\\.') | reject('in', hid) | reject('is_state','unavailable') | sort %}{% set ns.o = ns.o + [{'type':'tile','entity':e,'features':[{'type':'media-player-volume-slider'}],'tap_action':{'action':'more-info'},'icon_tap_action':{'action':'toggle'}}] %}{% endfor %}{{ ns.o }}"
+                  },
+                  "else": {
+                    "type": "markdown",
+                    "content": "No media players in this room."
+                  }
+                }
+              ]
+            },
+            {
+              "type": "custom:expander-card",
+              "title-card": {
+                "type": "area",
+                "area": "example_backyard",
+                "display_type": "compact",
+                "features": [
+                  {
+                    "type": "area-controls"
+                  }
+                ],
+                "tap_action": {
+                  "action": "none"
+                }
+              },
+              "title-card-clickable": false,
+              "title-card-button-overlay": true,
+              "overlay-margin": "8px",
+              "icon": "mdi:chevron-down",
+              "expanded": false,
+              "storage-id": "room_panel_example_backyard",
+              "padding": "12px",
+              "child-padding": "0",
+              "expanded-gap": "12px",
+              "clear": false,
+              "expander-card-background": "color-mix(in srgb, var(--primary-text-color) 5%, transparent)",
+              "grid_options": {
+                "columns": "full"
+              },
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Scenes",
+                  "heading_style": "subtitle",
+                  "icon": "mdi:palette-outline",
+                  "badges": [
+                    {
+                      "type": "button",
+                      "icon": "mdi:eye-off-outline",
+                      "text": "Show hidden",
+                      "visibility": [
+                        {
+                          "condition": "state",
+                          "entity": "input_boolean.hub_show_hidden_room_scenes",
+                          "state": "off"
+                        }
+                      ],
+                      "tap_action": {
+                        "action": "perform-action",
+                        "perform_action": "input_boolean.toggle",
+                        "target": {
+                          "entity_id": "input_boolean.hub_show_hidden_room_scenes"
+                        }
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "icon": "mdi:eye",
+                      "text": "Hide hidden",
+                      "visibility": [
+                        {
+                          "condition": "state",
+                          "entity": "input_boolean.hub_show_hidden_room_scenes",
+                          "state": "on"
+                        }
+                      ],
+                      "tap_action": {
+                        "action": "perform-action",
+                        "perform_action": "input_boolean.toggle",
+                        "target": {
+                          "entity_id": "input_boolean.hub_show_hidden_room_scenes"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "grid",
+                    "columns": 2,
+                    "square": false
+                  },
+                  "card_param": "cards",
+                  "filter": {
+                    "template": "{% set a='example_backyard' %}{% set H = (state_attr('sensor.hub_hidden_items','hidden') or {}).get('room_scenes', []) %}{% set show = is_state('input_boolean.hub_show_hidden_room_scenes','on') %}{% set ign = label_entities('hub_ignore') %}{% set ns = namespace(o=[]) %}{% for e in area_entities(a) | select('match','scene\\.') | reject('in', ign) | sort %}{% set hd = e in H %}{% if show or not hd %}{% set ns.o = ns.o + [{'type':'custom:button-card','entity':e,'show_name':false,'show_icon':false,'show_state':false,'show_label':false,'tap_action':{'action':'none'},'hold_action':{'action':'none'},'custom_fields':{'tile':{'card':{'type':'tile','entity':e,'tap_action':{'action':'perform-action','perform_action':'scene.turn_on','target':{'entity_id':e}},'icon_tap_action':{'action':'perform-action','perform_action':'scene.turn_on','target':{'entity_id':e}}}},'eye':{'card':{'type':'custom:button-card','show_name':false,'icon':('mdi:eye-off' if hd else 'mdi:eye-outline'),'tap_action':{'action':'perform-action','perform_action':'script.hub_toggle_hidden','data':{'list':'room_scenes','entity_id':e}},'hold_action':{'action':'none'},'styles':{'card':[{'background':'none'},{'box-shadow':'none'},{'border':'none'},{'padding':'4px'},{'width':'32px'},{'height':'32px'},{'border-radius':'16px'},{'display':('block' if show else 'none')}],'icon':[{'width':'18px'},{'color':'var(--secondary-text-color)'}]}}}},'styles':{'grid':[{'grid-template-areas':'\"tile\"'},{'grid-template-columns':'1fr'},{'align-items':'center'}],'card':[{'position':'relative'},{'padding':'0'},{'background':'none'},{'box-shadow':'none'},{'border':'none'},{'overflow':'visible'},{'opacity':('0.38' if hd else '1')}],'custom_fields':{'tile':[{'width':'100%'}],'eye':[{'position':'absolute'},{'top':'50%'},{'right':'8px'},{'transform':'translateY(-50%)'},{'z-index':'2'}]}}}] %}{% endif %}{% endfor %}{{ ns.o }}"
+                  },
+                  "else": {
+                    "type": "markdown",
+                    "content": "No scenes in this room."
+                  }
+                },
+                {
+                  "type": "heading",
+                  "heading": "Room lights",
+                  "heading_style": "subtitle",
+                  "icon": "mdi:lightbulb-group-outline"
+                },
+                {
+                  "type": "shortcut",
+                  "label": "All lights off",
+                  "icon": "mdi:lightbulb-off-outline",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "light.turn_off",
+                    "target": {
+                      "area_id": "example_backyard"
+                    }
+                  }
+                },
+                {
+                  "type": "heading",
+                  "heading": "Lights",
+                  "heading_style": "subtitle",
+                  "icon": "mdi:lightbulb-outline"
+                },
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "grid",
+                    "columns": 2,
+                    "square": false
+                  },
+                  "card_param": "cards",
+                  "filter": {
+                    "template": "{% set a='example_backyard' %}{% set groups = states.light | selectattr('attributes.entity_id','defined') | map(attribute='entity_id') | list %}{% set hid = label_entities('hub_ignore') %}{% set ns = namespace(o=[]) %}{% for e in area_entities(a) | select('match','light\\.') | reject('in', groups) | reject('in', hid) | reject('is_state','unavailable') | sort %}{% set ns.o = ns.o + [{'type':'custom:button-card','entity':e,'show_name':false,'show_icon':false,'show_state':false,'show_label':false,'tap_action':{'action':'none'},'hold_action':{'action':'none'},'custom_fields':{'tile':{'card':{'type':'tile','entity':e,'features':[{'type':'light-brightness'}],'features_position':'bottom','hide_state':true,'tap_action':{'action':'more-info'},'icon_tap_action':{'action':'toggle'}}},'pct':\"[[[ const s = states[entity.entity_id]; if (!s) return ''; const m = s.attributes.supported_color_modes || []; if (m.length === 0 || (m.length === 1 && m[0] === 'onoff')) return ''; if (s.state !== 'on') return 'Off'; return Math.round((s.attributes.brightness || 0) / 2.55) + '%'; ]]]\"},'styles':{'grid':[{'grid-template-areas':'\"tile\"'},{'grid-template-columns':'1fr'}],'card':[{'position':'relative'},{'padding':'0'},{'background':'none'},{'box-shadow':'none'},{'border':'none'},{'overflow':'visible'}],'custom_fields':{'tile':[{'width':'100%'}],'pct':[{'position':'absolute'},{'right':'24px'},{'bottom':'32px'},{'transform':'translateY(50%)'},{'font-size':'11px'},{'font-weight':'500'},{'color':'var(--primary-text-color)'},{'opacity':'0.7'},{'pointer-events':'none'},{'z-index':'2'}]}}}] %}{% endfor %}{{ ns.o }}"
+                  },
+                  "else": {
+                    "type": "markdown",
+                    "content": "No lights in this room."
+                  }
+                },
+                {
+                  "type": "heading",
+                  "heading": "Media",
+                  "heading_style": "subtitle",
+                  "icon": "mdi:play-circle-outline"
+                },
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "grid",
+                    "columns": 2,
+                    "square": false
+                  },
+                  "card_param": "cards",
+                  "filter": {
+                    "template": "{% set a='example_backyard' %}{% set hid = label_entities('hub_ignore') + [] %}{% set ns = namespace(o=[]) %}{% for e in area_entities(a) | select('match','media_player\\.') | reject('in', hid) | reject('is_state','unavailable') | sort %}{% set ns.o = ns.o + [{'type':'tile','entity':e,'features':[{'type':'media-player-volume-slider'}],'tap_action':{'action':'more-info'},'icon_tap_action':{'action':'toggle'}}] %}{% endfor %}{{ ns.o }}"
+                  },
+                  "else": {
+                    "type": "markdown",
+                    "content": "No media players in this room."
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "grid",
+          "cards": [
+            {
+              "type": "custom:expander-card",
+              "title-card": {
+                "type": "heading",
+                "heading": "TV remote",
+                "icon": "mdi:remote-tv"
+              },
+              "title-card-clickable": true,
+              "icon": "mdi:chevron-down",
+              "expanded": true,
+              "storage-id": "hub_home_remote",
+              "padding": "0",
+              "clear": true,
+              "grid_options": {
+                "columns": "full"
+              },
+              "cards": [
+                {
+                  "type": "custom:firemote-card",
+                  "entity": "media_player.example_tv",
+                  "device_family": "nvidia-shield",
+                  "device_type": "shield-tv-pro-2019",
+                  "compatibility_mode": "default",
+                  "android_tv_remote_entity": "remote.example_tv",
+                  "scale": "100",
+                  "app_launch_1": "plex",
+                  "app_launch_2": "youtube",
+                  "app_launch_3": "spotify",
+                  "app_launch_4": "steam-link"
+                }
+              ],
+              "visibility": [
+                {
+                  "condition": "state",
+                  "entity": "remote.example_tv",
+                  "state": "on"
+                }
+              ]
+            },
+            {
+              "type": "custom:expander-card",
+              "title-card": {
+                "type": "area",
+                "area": "example_kitchen",
+                "display_type": "compact",
+                "features": [
+                  {
+                    "type": "area-controls"
+                  }
+                ],
+                "tap_action": {
+                  "action": "none"
+                }
+              },
+              "title-card-clickable": false,
+              "title-card-button-overlay": true,
+              "overlay-margin": "8px",
+              "icon": "mdi:chevron-down",
+              "expanded": false,
+              "storage-id": "room_panel_example_kitchen",
+              "padding": "12px",
+              "child-padding": "0",
+              "expanded-gap": "12px",
+              "clear": false,
+              "expander-card-background": "color-mix(in srgb, var(--primary-text-color) 5%, transparent)",
+              "grid_options": {
+                "columns": "full"
+              },
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Scenes",
+                  "heading_style": "subtitle",
+                  "icon": "mdi:palette-outline",
+                  "badges": [
+                    {
+                      "type": "button",
+                      "icon": "mdi:eye-off-outline",
+                      "text": "Show hidden",
+                      "visibility": [
+                        {
+                          "condition": "state",
+                          "entity": "input_boolean.hub_show_hidden_room_scenes",
+                          "state": "off"
+                        }
+                      ],
+                      "tap_action": {
+                        "action": "perform-action",
+                        "perform_action": "input_boolean.toggle",
+                        "target": {
+                          "entity_id": "input_boolean.hub_show_hidden_room_scenes"
+                        }
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "icon": "mdi:eye",
+                      "text": "Hide hidden",
+                      "visibility": [
+                        {
+                          "condition": "state",
+                          "entity": "input_boolean.hub_show_hidden_room_scenes",
+                          "state": "on"
+                        }
+                      ],
+                      "tap_action": {
+                        "action": "perform-action",
+                        "perform_action": "input_boolean.toggle",
+                        "target": {
+                          "entity_id": "input_boolean.hub_show_hidden_room_scenes"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "grid",
+                    "columns": 2,
+                    "square": false
+                  },
+                  "card_param": "cards",
+                  "filter": {
+                    "template": "{% set a='example_kitchen' %}{% set H = (state_attr('sensor.hub_hidden_items','hidden') or {}).get('room_scenes', []) %}{% set show = is_state('input_boolean.hub_show_hidden_room_scenes','on') %}{% set ign = label_entities('hub_ignore') %}{% set ns = namespace(o=[]) %}{% for e in area_entities(a) | select('match','scene\\.') | reject('in', ign) | sort %}{% set hd = e in H %}{% if show or not hd %}{% set ns.o = ns.o + [{'type':'custom:button-card','entity':e,'show_name':false,'show_icon':false,'show_state':false,'show_label':false,'tap_action':{'action':'none'},'hold_action':{'action':'none'},'custom_fields':{'tile':{'card':{'type':'tile','entity':e,'tap_action':{'action':'perform-action','perform_action':'scene.turn_on','target':{'entity_id':e}},'icon_tap_action':{'action':'perform-action','perform_action':'scene.turn_on','target':{'entity_id':e}}}},'eye':{'card':{'type':'custom:button-card','show_name':false,'icon':('mdi:eye-off' if hd else 'mdi:eye-outline'),'tap_action':{'action':'perform-action','perform_action':'script.hub_toggle_hidden','data':{'list':'room_scenes','entity_id':e}},'hold_action':{'action':'none'},'styles':{'card':[{'background':'none'},{'box-shadow':'none'},{'border':'none'},{'padding':'4px'},{'width':'32px'},{'height':'32px'},{'border-radius':'16px'},{'display':('block' if show else 'none')}],'icon':[{'width':'18px'},{'color':'var(--secondary-text-color)'}]}}}},'styles':{'grid':[{'grid-template-areas':'\"tile\"'},{'grid-template-columns':'1fr'},{'align-items':'center'}],'card':[{'position':'relative'},{'padding':'0'},{'background':'none'},{'box-shadow':'none'},{'border':'none'},{'overflow':'visible'},{'opacity':('0.38' if hd else '1')}],'custom_fields':{'tile':[{'width':'100%'}],'eye':[{'position':'absolute'},{'top':'50%'},{'right':'8px'},{'transform':'translateY(-50%)'},{'z-index':'2'}]}}}] %}{% endif %}{% endfor %}{{ ns.o }}"
+                  },
+                  "else": {
+                    "type": "markdown",
+                    "content": "No scenes in this room."
+                  }
+                },
+                {
+                  "type": "heading",
+                  "heading": "Room lights",
+                  "heading_style": "subtitle",
+                  "icon": "mdi:lightbulb-group-outline"
+                },
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "state",
+                      "entity": "input_select.example_kitchen_light_mode",
+                      "state": "White"
+                    }
+                  ],
+                  "card": {
+                    "type": "vertical-stack",
+                    "cards": [
+                      {
+                        "type": "tile",
+                        "entity": "input_select.example_kitchen_light_mode",
+                        "name": "Light mode",
+                        "icon": "mdi:white-balance-sunny",
+                        "tap_action": {
+                          "action": "perform-action",
+                          "perform_action": "input_select.select_option",
+                          "target": {
+                            "entity_id": "input_select.example_kitchen_light_mode"
+                          },
+                          "data": {
+                            "option": "Colour"
+                          }
+                        },
+                        "icon_tap_action": {
+                          "action": "perform-action",
+                          "perform_action": "input_select.select_option",
+                          "target": {
+                            "entity_id": "input_select.example_kitchen_light_mode"
+                          },
+                          "data": {
+                            "option": "Colour"
+                          }
+                        }
+                      },
+                      {
+                        "type": "grid",
+                        "columns": 3,
+                        "square": false,
+                        "cards": [
+                          {
+                            "type": "shortcut",
+                            "label": "Warm",
+                            "icon": "mdi:weather-sunset",
+                            "tap_action": {
+                              "action": "perform-action",
+                              "perform_action": "light.turn_on",
+                              "target": {
+                                "entity_id": "light.example_kitchen_lights"
+                              },
+                              "data": {
+                                "color_temp_kelvin": 2700
+                              }
+                            }
+                          },
+                          {
+                            "type": "shortcut",
+                            "label": "Daylight",
+                            "icon": "mdi:white-balance-sunny",
+                            "tap_action": {
+                              "action": "perform-action",
+                              "perform_action": "light.turn_on",
+                              "target": {
+                                "entity_id": "light.example_kitchen_lights"
+                              },
+                              "data": {
+                                "color_temp_kelvin": 4000
+                              }
+                            }
+                          },
+                          {
+                            "type": "shortcut",
+                            "label": "Cool",
+                            "icon": "mdi:snowflake",
+                            "tap_action": {
+                              "action": "perform-action",
+                              "perform_action": "light.turn_on",
+                              "target": {
+                                "entity_id": "light.example_kitchen_lights"
+                              },
+                              "data": {
+                                "color_temp_kelvin": 6000
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "custom:button-card",
+                        "entity": "light.example_kitchen_lights",
+                        "show_name": false,
+                        "show_icon": false,
+                        "show_state": false,
+                        "show_label": false,
+                        "tap_action": {
+                          "action": "none"
+                        },
+                        "hold_action": {
+                          "action": "none"
+                        },
+                        "custom_fields": {
+                          "tile": {
+                            "card": {
+                              "type": "tile",
+                              "name": "Brightness",
+                              "features": [
+                                {
+                                  "type": "light-brightness"
+                                }
+                              ],
+                              "tap_action": {
+                                "action": "more-info"
+                              },
+                              "entity": "light.example_kitchen_lights",
+                              "hide_state": true
+                            }
+                          },
+                          "pct": "[[[ const s = states[entity.entity_id]; if (!s || s.state === 'unavailable') return ''; if (s.state !== 'on') return 'Off'; return Math.round((s.attributes.brightness || 0) / 2.55) + '%'; ]]]"
+                        },
+                        "styles": {
+                          "grid": [
+                            {
+                              "grid-template-areas": "\"tile\""
+                            },
+                            {
+                              "grid-template-columns": "1fr"
+                            }
+                          ],
+                          "card": [
+                            {
+                              "position": "relative"
+                            },
+                            {
+                              "padding": "0"
+                            },
+                            {
+                              "background": "none"
+                            },
+                            {
+                              "box-shadow": "none"
+                            },
+                            {
+                              "border": "none"
+                            },
+                            {
+                              "overflow": "visible"
+                            }
+                          ],
+                          "custom_fields": {
+                            "tile": [
+                              {
+                                "width": "100%"
+                              }
+                            ],
+                            "pct": [
+                              {
+                                "position": "absolute"
+                              },
+                              {
+                                "top": "28px"
+                              },
+                              {
+                                "transform": "translateY(-50%)"
+                              },
+                              {
+                                "right": "16px"
+                              },
+                              {
+                                "font-size": "11px"
+                              },
+                              {
+                                "color": "var(--secondary-text-color)"
+                              },
+                              {
+                                "opacity": "0.7"
+                              },
+                              {
+                                "pointer-events": "none"
+                              },
+                              {
+                                "z-index": "2"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        "type": "shortcut",
+                        "label": "All lights off",
+                        "icon": "mdi:lightbulb-off-outline",
+                        "tap_action": {
+                          "action": "perform-action",
+                          "perform_action": "light.turn_off",
+                          "target": {
+                            "area_id": "example_kitchen"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "state",
+                      "entity": "input_select.example_kitchen_light_mode",
+                      "state": "Colour"
+                    }
+                  ],
+                  "card": {
+                    "type": "vertical-stack",
+                    "cards": [
+                      {
+                        "type": "tile",
+                        "entity": "input_select.example_kitchen_light_mode",
+                        "name": "Light mode",
+                        "icon": "mdi:palette",
+                        "tap_action": {
+                          "action": "perform-action",
+                          "perform_action": "input_select.select_option",
+                          "target": {
+                            "entity_id": "input_select.example_kitchen_light_mode"
+                          },
+                          "data": {
+                            "option": "White"
+                          }
+                        },
+                        "icon_tap_action": {
+                          "action": "perform-action",
+                          "perform_action": "input_select.select_option",
+                          "target": {
+                            "entity_id": "input_select.example_kitchen_light_mode"
+                          },
+                          "data": {
+                            "option": "White"
+                          }
+                        }
+                      },
+                      {
+                        "type": "custom:button-card",
+                        "entity": "light.example_kitchen_lights",
+                        "show_name": false,
+                        "show_icon": false,
+                        "show_state": false,
+                        "show_label": false,
+                        "tap_action": {
+                          "action": "none"
+                        },
+                        "hold_action": {
+                          "action": "none"
+                        },
+                        "custom_fields": {
+                          "tile": {
+                            "card": {
+                              "type": "tile",
+                              "name": "Colour (tap for wheel)",
+                              "icon": "mdi:palette",
+                              "features": [
+                                {
+                                  "type": "light-color-favorites"
+                                },
+                                {
+                                  "type": "light-brightness"
+                                }
+                              ],
+                              "tap_action": {
+                                "action": "more-info"
+                              },
+                              "entity": "light.example_kitchen_lights",
+                              "hide_state": true
+                            }
+                          },
+                          "pct": "[[[ const s = states[entity.entity_id]; if (!s || s.state === 'unavailable') return ''; if (s.state !== 'on') return 'Off'; return Math.round((s.attributes.brightness || 0) / 2.55) + '%'; ]]]"
+                        },
+                        "styles": {
+                          "grid": [
+                            {
+                              "grid-template-areas": "\"tile\""
+                            },
+                            {
+                              "grid-template-columns": "1fr"
+                            }
+                          ],
+                          "card": [
+                            {
+                              "position": "relative"
+                            },
+                            {
+                              "padding": "0"
+                            },
+                            {
+                              "background": "none"
+                            },
+                            {
+                              "box-shadow": "none"
+                            },
+                            {
+                              "border": "none"
+                            },
+                            {
+                              "overflow": "visible"
+                            }
+                          ],
+                          "custom_fields": {
+                            "tile": [
+                              {
+                                "width": "100%"
+                              }
+                            ],
+                            "pct": [
+                              {
+                                "position": "absolute"
+                              },
+                              {
+                                "top": "28px"
+                              },
+                              {
+                                "transform": "translateY(-50%)"
+                              },
+                              {
+                                "right": "16px"
+                              },
+                              {
+                                "font-size": "11px"
+                              },
+                              {
+                                "color": "var(--secondary-text-color)"
+                              },
+                              {
+                                "opacity": "0.7"
+                              },
+                              {
+                                "pointer-events": "none"
+                              },
+                              {
+                                "z-index": "2"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        "type": "shortcut",
+                        "label": "All lights off",
+                        "icon": "mdi:lightbulb-off-outline",
+                        "tap_action": {
+                          "action": "perform-action",
+                          "perform_action": "light.turn_off",
+                          "target": {
+                            "area_id": "example_kitchen"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "heading",
+                  "heading": "Lights",
+                  "heading_style": "subtitle",
+                  "icon": "mdi:lightbulb-outline"
+                },
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "grid",
+                    "columns": 2,
+                    "square": false
+                  },
+                  "card_param": "cards",
+                  "filter": {
+                    "template": "{% set a='example_kitchen' %}{% set groups = states.light | selectattr('attributes.entity_id','defined') | map(attribute='entity_id') | list %}{% set hid = label_entities('hub_ignore') %}{% set ns = namespace(o=[]) %}{% for e in area_entities(a) | select('match','light\\.') | reject('in', groups) | reject('in', hid) | reject('is_state','unavailable') | sort %}{% set ns.o = ns.o + [{'type':'custom:button-card','entity':e,'show_name':false,'show_icon':false,'show_state':false,'show_label':false,'tap_action':{'action':'none'},'hold_action':{'action':'none'},'custom_fields':{'tile':{'card':{'type':'tile','entity':e,'features':[{'type':'light-brightness'}],'features_position':'bottom','hide_state':true,'tap_action':{'action':'more-info'},'icon_tap_action':{'action':'toggle'}}},'pct':\"[[[ const s = states[entity.entity_id]; if (!s) return ''; const m = s.attributes.supported_color_modes || []; if (m.length === 0 || (m.length === 1 && m[0] === 'onoff')) return ''; if (s.state !== 'on') return 'Off'; return Math.round((s.attributes.brightness || 0) / 2.55) + '%'; ]]]\"},'styles':{'grid':[{'grid-template-areas':'\"tile\"'},{'grid-template-columns':'1fr'}],'card':[{'position':'relative'},{'padding':'0'},{'background':'none'},{'box-shadow':'none'},{'border':'none'},{'overflow':'visible'}],'custom_fields':{'tile':[{'width':'100%'}],'pct':[{'position':'absolute'},{'right':'24px'},{'bottom':'32px'},{'transform':'translateY(50%)'},{'font-size':'11px'},{'font-weight':'500'},{'color':'var(--primary-text-color)'},{'opacity':'0.7'},{'pointer-events':'none'},{'z-index':'2'}]}}}] %}{% endfor %}{{ ns.o }}"
+                  },
+                  "else": {
+                    "type": "markdown",
+                    "content": "No lights in this room."
+                  }
+                },
+                {
+                  "type": "heading",
+                  "heading": "Media",
+                  "heading_style": "subtitle",
+                  "icon": "mdi:play-circle-outline"
+                },
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "grid",
+                    "columns": 2,
+                    "square": false
+                  },
+                  "card_param": "cards",
+                  "filter": {
+                    "template": "{% set a='example_kitchen' %}{% set hid = label_entities('hub_ignore') + [] %}{% set ns = namespace(o=[]) %}{% for e in area_entities(a) | select('match','media_player\\.') | reject('in', hid) | reject('is_state','unavailable') | sort %}{% set ns.o = ns.o + [{'type':'tile','entity':e,'features':[{'type':'media-player-volume-slider'}],'tap_action':{'action':'more-info'},'icon_tap_action':{'action':'toggle'}}] %}{% endfor %}{{ ns.o }}"
+                  },
+                  "else": {
+                    "type": "markdown",
+                    "content": "No media players in this room."
+                  }
+                }
+              ]
+            },
+            {
+              "type": "custom:expander-card",
+              "title-card": {
+                "type": "area",
+                "area": "example_office",
+                "display_type": "compact",
+                "features": [
+                  {
+                    "type": "area-controls"
+                  }
+                ],
+                "tap_action": {
+                  "action": "none"
+                }
+              },
+              "title-card-clickable": false,
+              "title-card-button-overlay": true,
+              "overlay-margin": "8px",
+              "icon": "mdi:chevron-down",
+              "expanded": false,
+              "storage-id": "room_panel_example_office",
+              "padding": "12px",
+              "child-padding": "0",
+              "expanded-gap": "12px",
+              "clear": false,
+              "expander-card-background": "color-mix(in srgb, var(--primary-text-color) 5%, transparent)",
+              "grid_options": {
+                "columns": "full"
+              },
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Scenes",
+                  "heading_style": "subtitle",
+                  "icon": "mdi:palette-outline",
+                  "badges": [
+                    {
+                      "type": "button",
+                      "icon": "mdi:eye-off-outline",
+                      "text": "Show hidden",
+                      "visibility": [
+                        {
+                          "condition": "state",
+                          "entity": "input_boolean.hub_show_hidden_room_scenes",
+                          "state": "off"
+                        }
+                      ],
+                      "tap_action": {
+                        "action": "perform-action",
+                        "perform_action": "input_boolean.toggle",
+                        "target": {
+                          "entity_id": "input_boolean.hub_show_hidden_room_scenes"
+                        }
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "icon": "mdi:eye",
+                      "text": "Hide hidden",
+                      "visibility": [
+                        {
+                          "condition": "state",
+                          "entity": "input_boolean.hub_show_hidden_room_scenes",
+                          "state": "on"
+                        }
+                      ],
+                      "tap_action": {
+                        "action": "perform-action",
+                        "perform_action": "input_boolean.toggle",
+                        "target": {
+                          "entity_id": "input_boolean.hub_show_hidden_room_scenes"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "grid",
+                    "columns": 2,
+                    "square": false
+                  },
+                  "card_param": "cards",
+                  "filter": {
+                    "template": "{% set a='example_office' %}{% set H = (state_attr('sensor.hub_hidden_items','hidden') or {}).get('room_scenes', []) %}{% set show = is_state('input_boolean.hub_show_hidden_room_scenes','on') %}{% set ign = label_entities('hub_ignore') %}{% set ns = namespace(o=[]) %}{% for e in area_entities(a) | select('match','scene\\.') | reject('in', ign) | sort %}{% set hd = e in H %}{% if show or not hd %}{% set ns.o = ns.o + [{'type':'custom:button-card','entity':e,'show_name':false,'show_icon':false,'show_state':false,'show_label':false,'tap_action':{'action':'none'},'hold_action':{'action':'none'},'custom_fields':{'tile':{'card':{'type':'tile','entity':e,'tap_action':{'action':'perform-action','perform_action':'scene.turn_on','target':{'entity_id':e}},'icon_tap_action':{'action':'perform-action','perform_action':'scene.turn_on','target':{'entity_id':e}}}},'eye':{'card':{'type':'custom:button-card','show_name':false,'icon':('mdi:eye-off' if hd else 'mdi:eye-outline'),'tap_action':{'action':'perform-action','perform_action':'script.hub_toggle_hidden','data':{'list':'room_scenes','entity_id':e}},'hold_action':{'action':'none'},'styles':{'card':[{'background':'none'},{'box-shadow':'none'},{'border':'none'},{'padding':'4px'},{'width':'32px'},{'height':'32px'},{'border-radius':'16px'},{'display':('block' if show else 'none')}],'icon':[{'width':'18px'},{'color':'var(--secondary-text-color)'}]}}}},'styles':{'grid':[{'grid-template-areas':'\"tile\"'},{'grid-template-columns':'1fr'},{'align-items':'center'}],'card':[{'position':'relative'},{'padding':'0'},{'background':'none'},{'box-shadow':'none'},{'border':'none'},{'overflow':'visible'},{'opacity':('0.38' if hd else '1')}],'custom_fields':{'tile':[{'width':'100%'}],'eye':[{'position':'absolute'},{'top':'50%'},{'right':'8px'},{'transform':'translateY(-50%)'},{'z-index':'2'}]}}}] %}{% endif %}{% endfor %}{{ ns.o }}"
+                  },
+                  "else": {
+                    "type": "markdown",
+                    "content": "No scenes in this room."
+                  }
+                },
+                {
+                  "type": "heading",
+                  "heading": "Lights",
+                  "heading_style": "subtitle",
+                  "icon": "mdi:lightbulb-outline"
+                },
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "grid",
+                    "columns": 2,
+                    "square": false
+                  },
+                  "card_param": "cards",
+                  "filter": {
+                    "template": "{% set a='example_office' %}{% set groups = states.light | selectattr('attributes.entity_id','defined') | map(attribute='entity_id') | list %}{% set hid = label_entities('hub_ignore') %}{% set ns = namespace(o=[]) %}{% for e in area_entities(a) | select('match','light\\.') | reject('in', groups) | reject('in', hid) | reject('is_state','unavailable') | sort %}{% set ns.o = ns.o + [{'type':'custom:button-card','entity':e,'show_name':false,'show_icon':false,'show_state':false,'show_label':false,'tap_action':{'action':'none'},'hold_action':{'action':'none'},'custom_fields':{'tile':{'card':{'type':'tile','entity':e,'features':[{'type':'light-brightness'}],'features_position':'bottom','hide_state':true,'tap_action':{'action':'more-info'},'icon_tap_action':{'action':'toggle'}}},'pct':\"[[[ const s = states[entity.entity_id]; if (!s) return ''; const m = s.attributes.supported_color_modes || []; if (m.length === 0 || (m.length === 1 && m[0] === 'onoff')) return ''; if (s.state !== 'on') return 'Off'; return Math.round((s.attributes.brightness || 0) / 2.55) + '%'; ]]]\"},'styles':{'grid':[{'grid-template-areas':'\"tile\"'},{'grid-template-columns':'1fr'}],'card':[{'position':'relative'},{'padding':'0'},{'background':'none'},{'box-shadow':'none'},{'border':'none'},{'overflow':'visible'}],'custom_fields':{'tile':[{'width':'100%'}],'pct':[{'position':'absolute'},{'right':'24px'},{'bottom':'32px'},{'transform':'translateY(50%)'},{'font-size':'11px'},{'font-weight':'500'},{'color':'var(--primary-text-color)'},{'opacity':'0.7'},{'pointer-events':'none'},{'z-index':'2'}]}}}] %}{% endfor %}{{ ns.o }}"
+                  },
+                  "else": {
+                    "type": "markdown",
+                    "content": "No lights in this room."
+                  }
+                },
+                {
+                  "type": "heading",
+                  "heading": "Media",
+                  "heading_style": "subtitle",
+                  "icon": "mdi:play-circle-outline"
+                },
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "grid",
+                    "columns": 2,
+                    "square": false
+                  },
+                  "card_param": "cards",
+                  "filter": {
+                    "template": "{% set a='example_office' %}{% set hid = label_entities('hub_ignore') + [] %}{% set ns = namespace(o=[]) %}{% for e in area_entities(a) | select('match','media_player\\.') | reject('in', hid) | reject('is_state','unavailable') | sort %}{% set ns.o = ns.o + [{'type':'tile','entity':e,'features':[{'type':'media-player-volume-slider'}],'tap_action':{'action':'more-info'},'icon_tap_action':{'action':'toggle'}}] %}{% endfor %}{{ ns.o }}"
+                  },
+                  "else": {
+                    "type": "markdown",
+                    "content": "No media players in this room."
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Media",
+      "path": "media",
+      "icon": "mdi:play-circle-outline",
+      "type": "sections",
+      "max_columns": 3,
+      "sections": [
+        {
+          "type": "grid",
+          "cards": [
+            {
+              "type": "custom:expander-card",
+              "title-card": {
+                "type": "heading",
+                "heading": "TV remote",
+                "icon": "mdi:remote-tv"
+              },
+              "title-card-clickable": true,
+              "icon": "mdi:chevron-down",
+              "expanded": true,
+              "storage-id": "hub_media_remote",
+              "padding": "0",
+              "clear": true,
+              "grid_options": {
+                "columns": "full"
+              },
+              "cards": [
+                {
+                  "type": "custom:firemote-card",
+                  "entity": "media_player.example_tv",
+                  "device_family": "nvidia-shield",
+                  "device_type": "shield-tv-pro-2019",
+                  "compatibility_mode": "default",
+                  "android_tv_remote_entity": "remote.example_tv",
+                  "scale": "100",
+                  "app_launch_1": "plex",
+                  "app_launch_2": "youtube",
+                  "app_launch_3": "spotify",
+                  "app_launch_4": "steam-link"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "grid",
+          "column_span": 2,
+          "cards": [
+            {
+              "type": "custom:expander-card",
+              "title-card": {
+                "type": "heading",
+                "heading": "Music Assistant",
+                "icon": "mdi:music"
+              },
+              "title-card-clickable": true,
+              "icon": "mdi:chevron-down",
+              "expanded": true,
+              "storage-id": "hub_media_ma",
+              "padding": "0",
+              "clear": true,
+              "grid_options": {
+                "columns": "full"
+              },
+              "cards": [
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "custom:mass-player-card",
+                    "expressive": true,
+                    "default_section": "music_player",
+                    "player": {
+                      "layout": {
+                        "controls_layout": "compact"
+                      }
+                    }
+                  },
+                  "card_param": "entities",
+                  "filter": {
+                    "template": "{% set ns = namespace(out=[]) %}{% for e in integration_entities('music_assistant') | select('match','media_player\\.') %}{% if states(e) not in ['unavailable','unknown'] %}{% set ns.out = ns.out + [{'entity_id': e, 'name': state_attr(e,'friendly_name')}] %}{% endif %}{% endfor %}{{ ns.out }}"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "custom:expander-card",
+              "title-card": {
+                "type": "heading",
+                "heading": "All players",
+                "icon": "mdi:speaker-multiple",
+                "badges": [
+                  {
+                    "type": "entity",
+                    "entity": "input_boolean.hub_show_hidden_players",
+                    "show_state": false,
+                    "show_icon": true,
+                    "icon": "mdi:eye-off-outline",
+                    "tap_action": {
+                      "action": "toggle"
+                    },
+                    "visibility": [
+                      {
+                        "condition": "state",
+                        "entity": "input_boolean.hub_show_hidden_players",
+                        "state": "off"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "entity",
+                    "entity": "input_boolean.hub_show_hidden_players",
+                    "show_state": false,
+                    "show_icon": true,
+                    "icon": "mdi:eye",
+                    "color": "primary",
+                    "tap_action": {
+                      "action": "toggle"
+                    },
+                    "visibility": [
+                      {
+                        "condition": "state",
+                        "entity": "input_boolean.hub_show_hidden_players",
+                        "state": "on"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "title-card-clickable": false,
+              "icon": "mdi:chevron-down",
+              "expanded": true,
+              "storage-id": "hub_media_players",
+              "padding": "0",
+              "clear": true,
+              "grid_options": {
+                "columns": "full"
+              },
+              "cards": [
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "grid",
+                    "columns": 1,
+                    "square": false
+                  },
+                  "card_param": "cards",
+                  "filter": {
+                    "include": [
+                      {
+                        "integration": "music_assistant",
+                        "domain": "media_player",
+                        "options": {
+                          "type": "custom:button-card",
+                          "show_name": false,
+                          "show_icon": false,
+                          "show_state": false,
+                          "show_label": false,
+                          "triggers_update": [
+                            "sensor.hub_hidden_items",
+                            "input_boolean.hub_show_hidden_players"
+                          ],
+                          "tap_action": {
+                            "action": "none"
+                          },
+                          "hold_action": {
+                            "action": "none"
+                          },
+                          "custom_fields": {
+                            "tile": {
+                              "card": {
+                                "type": "tile",
+                                "entity": "this.entity_id",
+                                "features": [
+                                  {
+                                    "type": "media-player-playback"
+                                  },
+                                  {
+                                    "type": "media-player-volume-slider"
+                                  }
+                                ]
+                              }
+                            },
+                            "eye": {
+                              "card": {
+                                "type": "custom:button-card",
+                                "variables": {
+                                  "eid": "this.entity_id"
+                                },
+                                "triggers_update": [
+                                  "sensor.hub_hidden_items",
+                                  "input_boolean.hub_show_hidden_players"
+                                ],
+                                "show_name": false,
+                                "icon": "[[[ const H=(((states['sensor.hub_hidden_items']||{}).attributes||{}).hidden)||{}; return (H['players']||[]).includes(variables.eid) ? 'mdi:eye-off' : 'mdi:eye-outline'; ]]]",
+                                "tap_action": {
+                                  "action": "perform-action",
+                                  "perform_action": "script.hub_toggle_hidden",
+                                  "data": {
+                                    "list": "players",
+                                    "entity_id": "this.entity_id"
+                                  }
+                                },
+                                "hold_action": {
+                                  "action": "none"
+                                },
+                                "styles": {
+                                  "card": [
+                                    {
+                                      "background": "none"
+                                    },
+                                    {
+                                      "box-shadow": "none"
+                                    },
+                                    {
+                                      "border": "none"
+                                    },
+                                    {
+                                      "padding": "12px"
+                                    },
+                                    {
+                                      "width": "48px"
+                                    },
+                                    {
+                                      "height": "48px"
+                                    },
+                                    {
+                                      "border-radius": "24px"
+                                    },
+                                    {
+                                      "display": "[[[ return (states['input_boolean.hub_show_hidden_players']||{}).state==='on' ? 'block' : 'none'; ]]]"
+                                    }
+                                  ],
+                                  "icon": [
+                                    {
+                                      "width": "24px"
+                                    },
+                                    {
+                                      "color": "var(--secondary-text-color)"
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          },
+                          "styles": {
+                            "grid": [
+                              {
+                                "grid-template-areas": "\"tile eye\""
+                              },
+                              {
+                                "grid-template-columns": "[[[ return (states['input_boolean.hub_show_hidden_players']||{}).state==='on' ? '1fr 48px' : '1fr 0px'; ]]]"
+                              },
+                              {
+                                "column-gap": "8px"
+                              },
+                              {
+                                "align-items": "center"
+                              }
+                            ],
+                            "card": [
+                              {
+                                "padding": "0"
+                              },
+                              {
+                                "background": "none"
+                              },
+                              {
+                                "box-shadow": "none"
+                              },
+                              {
+                                "border": "none"
+                              },
+                              {
+                                "overflow": "visible"
+                              },
+                              {
+                                "display": "[[[ const H=(((states['sensor.hub_hidden_items']||{}).attributes||{}).hidden)||{}; const s=(states['input_boolean.hub_show_hidden_players']||{}).state==='on'; return ((H['players']||[]).includes(entity.entity_id) && !s) ? 'none' : 'block'; ]]]"
+                              },
+                              {
+                                "opacity": "[[[ const H=(((states['sensor.hub_hidden_items']||{}).attributes||{}).hidden)||{}; return (H['players']||[]).includes(entity.entity_id) ? '0.38' : '1'; ]]]"
+                              }
+                            ],
+                            "custom_fields": {
+                              "tile": [
+                                {
+                                  "width": "100%"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    ],
+                    "exclude": [
+                      {
+                        "state": "unavailable"
+                      },
+                      {
+                        "label": "hub_ignore"
+                      }
+                    ]
+                  },
+                  "sort": {
+                    "method": "name"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "People",
+      "path": "people",
+      "icon": "mdi:account-group-outline",
+      "type": "sections",
+      "max_columns": 3,
+      "sections": [
+        {
+          "type": "grid",
+          "cards": [
+            {
+              "type": "custom:expander-card",
+              "title-card": {
+                "type": "heading",
+                "heading": "People",
+                "icon": "mdi:account-multiple-outline",
+                "badges": [
+                  {
+                    "type": "entity",
+                    "entity": "input_boolean.hub_show_hidden_people",
+                    "show_state": false,
+                    "show_icon": true,
+                    "icon": "mdi:eye-off-outline",
+                    "tap_action": {
+                      "action": "toggle"
+                    },
+                    "visibility": [
+                      {
+                        "condition": "state",
+                        "entity": "input_boolean.hub_show_hidden_people",
+                        "state": "off"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "entity",
+                    "entity": "input_boolean.hub_show_hidden_people",
+                    "show_state": false,
+                    "show_icon": true,
+                    "icon": "mdi:eye",
+                    "color": "primary",
+                    "tap_action": {
+                      "action": "toggle"
+                    },
+                    "visibility": [
+                      {
+                        "condition": "state",
+                        "entity": "input_boolean.hub_show_hidden_people",
+                        "state": "on"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "title-card-clickable": false,
+              "icon": "mdi:chevron-down",
+              "expanded": true,
+              "storage-id": "hub_people",
+              "padding": "0",
+              "clear": true,
+              "grid_options": {
+                "columns": "full"
+              },
+              "cards": [
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "grid",
+                    "columns": 1,
+                    "square": false
+                  },
+                  "card_param": "cards",
+                  "filter": {
+                    "include": [
+                      {
+                        "domain": "person",
+                        "options": {
+                          "type": "custom:button-card",
+                          "show_label": true,
+                          "triggers_update": [
+                            "sensor.hub_hidden_items",
+                            "input_boolean.hub_show_hidden_people"
+                          ],
+                          "icon": "mdi:account",
+                          "label": "[[[ return 'Since ' + new Date(entity.last_changed).toLocaleString([], {weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'}); ]]]",
+                          "custom_fields": {
+                            "eye": {
+                              "card": {
+                                "type": "custom:button-card",
+                                "variables": {
+                                  "eid": "this.entity_id"
+                                },
+                                "triggers_update": [
+                                  "sensor.hub_hidden_items",
+                                  "input_boolean.hub_show_hidden_people"
+                                ],
+                                "show_name": false,
+                                "icon": "[[[ const H=(((states['sensor.hub_hidden_items']||{}).attributes||{}).hidden)||{}; return (H['people']||[]).includes(variables.eid) ? 'mdi:eye-off' : 'mdi:eye-outline'; ]]]",
+                                "tap_action": {
+                                  "action": "perform-action",
+                                  "perform_action": "script.hub_toggle_hidden",
+                                  "data": {
+                                    "list": "people",
+                                    "entity_id": "this.entity_id"
+                                  }
+                                },
+                                "hold_action": {
+                                  "action": "none"
+                                },
+                                "styles": {
+                                  "card": [
+                                    {
+                                      "background": "none"
+                                    },
+                                    {
+                                      "box-shadow": "none"
+                                    },
+                                    {
+                                      "border": "none"
+                                    },
+                                    {
+                                      "padding": "12px"
+                                    },
+                                    {
+                                      "width": "48px"
+                                    },
+                                    {
+                                      "height": "48px"
+                                    },
+                                    {
+                                      "border-radius": "24px"
+                                    },
+                                    {
+                                      "display": "[[[ return (states['input_boolean.hub_show_hidden_people']||{}).state==='on' ? 'block' : 'none'; ]]]"
+                                    }
+                                  ],
+                                  "icon": [
+                                    {
+                                      "width": "24px"
+                                    },
+                                    {
+                                      "color": "var(--secondary-text-color)"
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            "st": "[[[ const s = entity.state; return s === 'home' ? 'Home' : (s === 'not_home' ? 'Away' : s.charAt(0).toUpperCase() + s.slice(1)); ]]]"
+                          },
+                          "tap_action": {
+                            "action": "more-info"
+                          },
+                          "hold_action": {
+                            "action": "more-info"
+                          },
+                          "styles": {
+                            "grid": [
+                              {
+                                "grid-template-areas": "\"i n eye st\" \"i l eye st\""
+                              },
+                              {
+                                "grid-template-columns": "[[[ return (states['input_boolean.hub_show_hidden_people']||{}).state==='on' ? '40px 1fr 48px auto' : '40px 1fr 0px auto'; ]]]"
+                              },
+                              {
+                                "grid-template-rows": "auto auto"
+                              },
+                              {
+                                "column-gap": "16px"
+                              },
+                              {
+                                "align-items": "center"
+                              }
+                            ],
+                            "card": [
+                              {
+                                "padding": "8px 24px 8px 16px"
+                              },
+                              {
+                                "min-height": "72px"
+                              },
+                              {
+                                "background": "none"
+                              },
+                              {
+                                "box-shadow": "none"
+                              },
+                              {
+                                "border": "none"
+                              },
+                              {
+                                "border-radius": "0"
+                              },
+                              {
+                                "display": "[[[ const H=(((states['sensor.hub_hidden_items']||{}).attributes||{}).hidden)||{}; const s=(states['input_boolean.hub_show_hidden_people']||{}).state==='on'; return ((H['people']||[]).includes(entity.entity_id) && !s) ? 'none' : 'block'; ]]]"
+                              },
+                              {
+                                "opacity": "[[[ const H=(((states['sensor.hub_hidden_items']||{}).attributes||{}).hidden)||{}; return (H['people']||[]).includes(entity.entity_id) ? '0.38' : '1'; ]]]"
+                              }
+                            ],
+                            "icon": [
+                              {
+                                "width": "24px"
+                              },
+                              {
+                                "color": "var(--secondary-text-color)"
+                              }
+                            ],
+                            "name": [
+                              {
+                                "justify-self": "start"
+                              },
+                              {
+                                "text-align": "left"
+                              },
+                              {
+                                "white-space": "normal"
+                              },
+                              {
+                                "font-size": "16px"
+                              },
+                              {
+                                "line-height": "24px"
+                              },
+                              {
+                                "font-weight": "400"
+                              },
+                              {
+                                "color": "var(--primary-text-color)"
+                              }
+                            ],
+                            "label": [
+                              {
+                                "justify-self": "start"
+                              },
+                              {
+                                "text-align": "left"
+                              },
+                              {
+                                "font-size": "14px"
+                              },
+                              {
+                                "line-height": "20px"
+                              },
+                              {
+                                "color": "var(--secondary-text-color)"
+                              }
+                            ],
+                            "entity_picture": [
+                              {
+                                "border-radius": "50%"
+                              },
+                              {
+                                "width": "40px"
+                              },
+                              {
+                                "height": "40px"
+                              },
+                              {
+                                "object-fit": "cover"
+                              }
+                            ],
+                            "custom_fields": {
+                              "st": [
+                                {
+                                  "font-size": "14px"
+                                },
+                                {
+                                  "color": "var(--secondary-text-color)"
+                                }
+                              ]
+                            }
+                          },
+                          "show_entity_picture": true
+                        }
+                      }
+                    ],
+                    "exclude": [
+                      {
+                        "label": "hub_ignore"
+                      }
+                    ]
+                  },
+                  "sort": {
+                    "method": "name"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "custom:expander-card",
+              "title-card": {
+                "type": "heading",
+                "heading": "Phones & watches",
+                "icon": "mdi:cellphone-marker",
+                "badges": [
+                  {
+                    "type": "entity",
+                    "entity": "input_boolean.hub_show_hidden_trackers",
+                    "show_state": false,
+                    "show_icon": true,
+                    "icon": "mdi:eye-off-outline",
+                    "tap_action": {
+                      "action": "toggle"
+                    },
+                    "visibility": [
+                      {
+                        "condition": "state",
+                        "entity": "input_boolean.hub_show_hidden_trackers",
+                        "state": "off"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "entity",
+                    "entity": "input_boolean.hub_show_hidden_trackers",
+                    "show_state": false,
+                    "show_icon": true,
+                    "icon": "mdi:eye",
+                    "color": "primary",
+                    "tap_action": {
+                      "action": "toggle"
+                    },
+                    "visibility": [
+                      {
+                        "condition": "state",
+                        "entity": "input_boolean.hub_show_hidden_trackers",
+                        "state": "on"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "title-card-clickable": false,
+              "icon": "mdi:chevron-down",
+              "expanded": true,
+              "storage-id": "hub_trackers",
+              "padding": "0",
+              "clear": true,
+              "grid_options": {
+                "columns": "full"
+              },
+              "cards": [
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "grid",
+                    "columns": 1,
+                    "square": false
+                  },
+                  "card_param": "cards",
+                  "filter": {
+                    "include": [
+                      {
+                        "integration": "mobile_app",
+                        "domain": "device_tracker",
+                        "options": {
+                          "type": "custom:button-card",
+                          "show_label": true,
+                          "triggers_update": [
+                            "sensor.hub_hidden_items",
+                            "input_boolean.hub_show_hidden_trackers"
+                          ],
+                          "icon": "[[[ return entity.state === 'home' ? 'mdi:home-account' : (entity.state === 'not_home' ? 'mdi:account-arrow-right' : 'mdi:account-question'); ]]]",
+                          "label": "[[[ return 'Changed: ' + new Date(entity.last_changed).toLocaleString([], {weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'}); ]]]",
+                          "custom_fields": {
+                            "eye": {
+                              "card": {
+                                "type": "custom:button-card",
+                                "variables": {
+                                  "eid": "this.entity_id"
+                                },
+                                "triggers_update": [
+                                  "sensor.hub_hidden_items",
+                                  "input_boolean.hub_show_hidden_trackers"
+                                ],
+                                "show_name": false,
+                                "icon": "[[[ const H=(((states['sensor.hub_hidden_items']||{}).attributes||{}).hidden)||{}; return (H['trackers']||[]).includes(variables.eid) ? 'mdi:eye-off' : 'mdi:eye-outline'; ]]]",
+                                "tap_action": {
+                                  "action": "perform-action",
+                                  "perform_action": "script.hub_toggle_hidden",
+                                  "data": {
+                                    "list": "trackers",
+                                    "entity_id": "this.entity_id"
+                                  }
+                                },
+                                "hold_action": {
+                                  "action": "none"
+                                },
+                                "styles": {
+                                  "card": [
+                                    {
+                                      "background": "none"
+                                    },
+                                    {
+                                      "box-shadow": "none"
+                                    },
+                                    {
+                                      "border": "none"
+                                    },
+                                    {
+                                      "padding": "12px"
+                                    },
+                                    {
+                                      "width": "48px"
+                                    },
+                                    {
+                                      "height": "48px"
+                                    },
+                                    {
+                                      "border-radius": "24px"
+                                    },
+                                    {
+                                      "display": "[[[ return (states['input_boolean.hub_show_hidden_trackers']||{}).state==='on' ? 'block' : 'none'; ]]]"
+                                    }
+                                  ],
+                                  "icon": [
+                                    {
+                                      "width": "24px"
+                                    },
+                                    {
+                                      "color": "var(--secondary-text-color)"
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            "st": "[[[ const s = entity.state; return s === 'home' ? 'Home' : (s === 'not_home' ? 'Away' : s.charAt(0).toUpperCase() + s.slice(1)); ]]]"
+                          },
+                          "tap_action": {
+                            "action": "more-info"
+                          },
+                          "hold_action": {
+                            "action": "more-info"
+                          },
+                          "styles": {
+                            "grid": [
+                              {
+                                "grid-template-areas": "\"i n eye st\" \"i l eye st\""
+                              },
+                              {
+                                "grid-template-columns": "[[[ return (states['input_boolean.hub_show_hidden_trackers']||{}).state==='on' ? '40px 1fr 48px auto' : '40px 1fr 0px auto'; ]]]"
+                              },
+                              {
+                                "grid-template-rows": "auto auto"
+                              },
+                              {
+                                "column-gap": "16px"
+                              },
+                              {
+                                "align-items": "center"
+                              }
+                            ],
+                            "card": [
+                              {
+                                "padding": "8px 24px 8px 16px"
+                              },
+                              {
+                                "min-height": "72px"
+                              },
+                              {
+                                "background": "none"
+                              },
+                              {
+                                "box-shadow": "none"
+                              },
+                              {
+                                "border": "none"
+                              },
+                              {
+                                "border-radius": "0"
+                              },
+                              {
+                                "display": "[[[ const H=(((states['sensor.hub_hidden_items']||{}).attributes||{}).hidden)||{}; const s=(states['input_boolean.hub_show_hidden_trackers']||{}).state==='on'; return ((H['trackers']||[]).includes(entity.entity_id) && !s) ? 'none' : 'block'; ]]]"
+                              },
+                              {
+                                "opacity": "[[[ const H=(((states['sensor.hub_hidden_items']||{}).attributes||{}).hidden)||{}; return (H['trackers']||[]).includes(entity.entity_id) ? '0.38' : '1'; ]]]"
+                              }
+                            ],
+                            "icon": [
+                              {
+                                "width": "24px"
+                              },
+                              {
+                                "color": "[[[ return entity.state === 'home' ? 'var(--primary-color)' : 'var(--secondary-text-color)'; ]]]"
+                              }
+                            ],
+                            "name": [
+                              {
+                                "justify-self": "start"
+                              },
+                              {
+                                "text-align": "left"
+                              },
+                              {
+                                "white-space": "normal"
+                              },
+                              {
+                                "font-size": "16px"
+                              },
+                              {
+                                "line-height": "24px"
+                              },
+                              {
+                                "font-weight": "400"
+                              },
+                              {
+                                "color": "var(--primary-text-color)"
+                              }
+                            ],
+                            "label": [
+                              {
+                                "justify-self": "start"
+                              },
+                              {
+                                "text-align": "left"
+                              },
+                              {
+                                "font-size": "14px"
+                              },
+                              {
+                                "line-height": "20px"
+                              },
+                              {
+                                "color": "var(--secondary-text-color)"
+                              }
+                            ],
+                            "custom_fields": {
+                              "st": [
+                                {
+                                  "font-size": "14px"
+                                },
+                                {
+                                  "color": "var(--secondary-text-color)"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    ],
+                    "exclude": [
+                      {
+                        "label": "hub_ignore"
+                      }
+                    ]
+                  },
+                  "sort": {
+                    "method": "name"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "grid",
+          "column_span": 2,
+          "cards": [
+            {
+              "type": "custom:expander-card",
+              "title-card": {
+                "type": "heading",
+                "heading": "Map",
+                "icon": "mdi:map-marker-outline"
+              },
+              "title-card-clickable": true,
+              "icon": "mdi:chevron-down",
+              "expanded": true,
+              "storage-id": "hub_map",
+              "padding": "0",
+              "clear": true,
+              "grid_options": {
+                "columns": "full"
+              },
+              "cards": [
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "map",
+                    "default_zoom": 12,
+                    "hours_to_show": 12,
+                    "aspect_ratio": "4:3"
+                  },
+                  "filter": {
+                    "include": [
+                      {
+                        "domain": "person"
+                      },
+                      {
+                        "domain": "zone"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Automations",
+      "path": "automations",
+      "icon": "mdi:robot-outline",
+      "type": "sections",
+      "max_columns": 3,
+      "sections": [
+        {
+          "type": "grid",
+          "column_span": 2,
+          "cards": [
+            {
+              "type": "custom:expander-card",
+              "title-card": {
+                "type": "heading",
+                "heading": "Automations",
+                "icon": "mdi:robot-outline",
+                "badges": [
+                  {
+                    "type": "entity",
+                    "entity": "input_boolean.hub_show_hidden_automations",
+                    "show_state": false,
+                    "show_icon": true,
+                    "icon": "mdi:eye-off-outline",
+                    "tap_action": {
+                      "action": "toggle"
+                    },
+                    "visibility": [
+                      {
+                        "condition": "state",
+                        "entity": "input_boolean.hub_show_hidden_automations",
+                        "state": "off"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "entity",
+                    "entity": "input_boolean.hub_show_hidden_automations",
+                    "show_state": false,
+                    "show_icon": true,
+                    "icon": "mdi:eye",
+                    "color": "primary",
+                    "tap_action": {
+                      "action": "toggle"
+                    },
+                    "visibility": [
+                      {
+                        "condition": "state",
+                        "entity": "input_boolean.hub_show_hidden_automations",
+                        "state": "on"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "title-card-clickable": false,
+              "icon": "mdi:chevron-down",
+              "expanded": true,
+              "storage-id": "hub_automations",
+              "padding": "0",
+              "clear": true,
+              "grid_options": {
+                "columns": "full"
+              },
+              "cards": [
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "grid",
+                    "columns": 1,
+                    "square": false
+                  },
+                  "card_param": "cards",
+                  "filter": {
+                    "include": [
+                      {
+                        "domain": "automation",
+                        "options": {
+                          "type": "custom:button-card",
+                          "show_label": true,
+                          "triggers_update": [
+                            "sensor.hub_hidden_items",
+                            "input_boolean.hub_show_hidden_automations"
+                          ],
+                          "icon": "[[[ return entity.state === 'on' ? 'mdi:robot' : 'mdi:robot-off'; ]]]",
+                          "label": "[[[ const t = entity.attributes.last_triggered; return 'Last triggered: ' + (t ? new Date(t).toLocaleString([], {weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'}) : 'Never'); ]]]",
+                          "custom_fields": {
+                            "eye": {
+                              "card": {
+                                "type": "custom:button-card",
+                                "variables": {
+                                  "eid": "this.entity_id"
+                                },
+                                "triggers_update": [
+                                  "sensor.hub_hidden_items",
+                                  "input_boolean.hub_show_hidden_automations"
+                                ],
+                                "show_name": false,
+                                "icon": "[[[ const H=(((states['sensor.hub_hidden_items']||{}).attributes||{}).hidden)||{}; return (H['automations']||[]).includes(variables.eid) ? 'mdi:eye-off' : 'mdi:eye-outline'; ]]]",
+                                "tap_action": {
+                                  "action": "perform-action",
+                                  "perform_action": "script.hub_toggle_hidden",
+                                  "data": {
+                                    "list": "automations",
+                                    "entity_id": "this.entity_id"
+                                  }
+                                },
+                                "hold_action": {
+                                  "action": "none"
+                                },
+                                "styles": {
+                                  "card": [
+                                    {
+                                      "background": "none"
+                                    },
+                                    {
+                                      "box-shadow": "none"
+                                    },
+                                    {
+                                      "border": "none"
+                                    },
+                                    {
+                                      "padding": "12px"
+                                    },
+                                    {
+                                      "width": "48px"
+                                    },
+                                    {
+                                      "height": "48px"
+                                    },
+                                    {
+                                      "border-radius": "24px"
+                                    },
+                                    {
+                                      "display": "[[[ return (states['input_boolean.hub_show_hidden_automations']||{}).state==='on' ? 'block' : 'none'; ]]]"
+                                    }
+                                  ],
+                                  "icon": [
+                                    {
+                                      "width": "24px"
+                                    },
+                                    {
+                                      "color": "var(--secondary-text-color)"
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            "sw": "[[[ return '<ha-switch ' + (entity.state === 'on' ? 'checked' : '') + ' style=\"pointer-events:none\"></ha-switch>'; ]]]"
+                          },
+                          "tap_action": {
+                            "action": "toggle",
+                            "confirmation": {
+                              "text": "[[[ return (entity.state === 'on' ? 'Turn off ' : 'Turn on ') + entity.attributes.friendly_name + '?'; ]]]"
+                            }
+                          },
+                          "hold_action": {
+                            "action": "more-info"
+                          },
+                          "styles": {
+                            "grid": [
+                              {
+                                "grid-template-areas": "\"i n eye sw\" \"i l eye sw\""
+                              },
+                              {
+                                "grid-template-columns": "[[[ return (states['input_boolean.hub_show_hidden_automations']||{}).state==='on' ? '40px 1fr 48px auto' : '40px 1fr 0px auto'; ]]]"
+                              },
+                              {
+                                "grid-template-rows": "auto auto"
+                              },
+                              {
+                                "column-gap": "16px"
+                              },
+                              {
+                                "align-items": "center"
+                              }
+                            ],
+                            "card": [
+                              {
+                                "padding": "8px 24px 8px 16px"
+                              },
+                              {
+                                "min-height": "72px"
+                              },
+                              {
+                                "background": "none"
+                              },
+                              {
+                                "box-shadow": "none"
+                              },
+                              {
+                                "border": "none"
+                              },
+                              {
+                                "border-radius": "0"
+                              },
+                              {
+                                "display": "[[[ const H=(((states['sensor.hub_hidden_items']||{}).attributes||{}).hidden)||{}; const s=(states['input_boolean.hub_show_hidden_automations']||{}).state==='on'; return ((H['automations']||[]).includes(entity.entity_id) && !s) ? 'none' : 'block'; ]]]"
+                              },
+                              {
+                                "opacity": "[[[ const H=(((states['sensor.hub_hidden_items']||{}).attributes||{}).hidden)||{}; return (H['automations']||[]).includes(entity.entity_id) ? '0.38' : '1'; ]]]"
+                              }
+                            ],
+                            "icon": [
+                              {
+                                "width": "24px"
+                              },
+                              {
+                                "color": "[[[ return entity.state === 'on' ? 'var(--primary-color)' : 'var(--secondary-text-color)'; ]]]"
+                              }
+                            ],
+                            "name": [
+                              {
+                                "justify-self": "start"
+                              },
+                              {
+                                "text-align": "left"
+                              },
+                              {
+                                "white-space": "normal"
+                              },
+                              {
+                                "font-size": "16px"
+                              },
+                              {
+                                "line-height": "24px"
+                              },
+                              {
+                                "font-weight": "400"
+                              },
+                              {
+                                "color": "var(--primary-text-color)"
+                              }
+                            ],
+                            "label": [
+                              {
+                                "justify-self": "start"
+                              },
+                              {
+                                "text-align": "left"
+                              },
+                              {
+                                "font-size": "14px"
+                              },
+                              {
+                                "line-height": "20px"
+                              },
+                              {
+                                "color": "var(--secondary-text-color)"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ],
+                    "exclude": [
+                      {
+                        "label": "hub_ignore"
+                      }
+                    ]
+                  },
+                  "sort": {
+                    "method": "name"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "grid",
+          "cards": [
+            {
+              "type": "custom:expander-card",
+              "title-card": {
+                "type": "heading",
+                "heading": "Scripts",
+                "icon": "mdi:script-text-outline",
+                "badges": [
+                  {
+                    "type": "entity",
+                    "entity": "input_boolean.hub_show_hidden_scripts",
+                    "show_state": false,
+                    "show_icon": true,
+                    "icon": "mdi:eye-off-outline",
+                    "tap_action": {
+                      "action": "toggle"
+                    },
+                    "visibility": [
+                      {
+                        "condition": "state",
+                        "entity": "input_boolean.hub_show_hidden_scripts",
+                        "state": "off"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "entity",
+                    "entity": "input_boolean.hub_show_hidden_scripts",
+                    "show_state": false,
+                    "show_icon": true,
+                    "icon": "mdi:eye",
+                    "color": "primary",
+                    "tap_action": {
+                      "action": "toggle"
+                    },
+                    "visibility": [
+                      {
+                        "condition": "state",
+                        "entity": "input_boolean.hub_show_hidden_scripts",
+                        "state": "on"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "title-card-clickable": false,
+              "icon": "mdi:chevron-down",
+              "expanded": true,
+              "storage-id": "hub_scripts",
+              "padding": "0",
+              "clear": true,
+              "grid_options": {
+                "columns": "full"
+              },
+              "cards": [
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "grid",
+                    "columns": 1,
+                    "square": false
+                  },
+                  "card_param": "cards",
+                  "filter": {
+                    "include": [
+                      {
+                        "domain": "script",
+                        "options": {
+                          "type": "custom:button-card",
+                          "show_label": true,
+                          "triggers_update": [
+                            "sensor.hub_hidden_items",
+                            "input_boolean.hub_show_hidden_scripts"
+                          ],
+                          "icon": "mdi:script-text-outline",
+                          "label": "[[[ const t = entity.attributes.last_triggered; return 'Last run: ' + (t ? new Date(t).toLocaleString([], {weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'}) : 'Never'); ]]]",
+                          "custom_fields": {
+                            "eye": {
+                              "card": {
+                                "type": "custom:button-card",
+                                "variables": {
+                                  "eid": "this.entity_id"
+                                },
+                                "triggers_update": [
+                                  "sensor.hub_hidden_items",
+                                  "input_boolean.hub_show_hidden_scripts"
+                                ],
+                                "show_name": false,
+                                "icon": "[[[ const H=(((states['sensor.hub_hidden_items']||{}).attributes||{}).hidden)||{}; return (H['scripts']||[]).includes(variables.eid) ? 'mdi:eye-off' : 'mdi:eye-outline'; ]]]",
+                                "tap_action": {
+                                  "action": "perform-action",
+                                  "perform_action": "script.hub_toggle_hidden",
+                                  "data": {
+                                    "list": "scripts",
+                                    "entity_id": "this.entity_id"
+                                  }
+                                },
+                                "hold_action": {
+                                  "action": "none"
+                                },
+                                "styles": {
+                                  "card": [
+                                    {
+                                      "background": "none"
+                                    },
+                                    {
+                                      "box-shadow": "none"
+                                    },
+                                    {
+                                      "border": "none"
+                                    },
+                                    {
+                                      "padding": "12px"
+                                    },
+                                    {
+                                      "width": "48px"
+                                    },
+                                    {
+                                      "height": "48px"
+                                    },
+                                    {
+                                      "border-radius": "24px"
+                                    },
+                                    {
+                                      "display": "[[[ return (states['input_boolean.hub_show_hidden_scripts']||{}).state==='on' ? 'block' : 'none'; ]]]"
+                                    }
+                                  ],
+                                  "icon": [
+                                    {
+                                      "width": "24px"
+                                    },
+                                    {
+                                      "color": "var(--secondary-text-color)"
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            "sw": "[[[ return '<ha-icon icon=\"' + (entity.state === 'on' ? 'mdi:stop-circle-outline' : 'mdi:play-circle-outline') + '\" style=\"--mdc-icon-size:32px;color:var(--primary-color)\"></ha-icon>'; ]]]"
+                          },
+                          "tap_action": {
+                            "action": "toggle"
+                          },
+                          "hold_action": {
+                            "action": "more-info"
+                          },
+                          "styles": {
+                            "grid": [
+                              {
+                                "grid-template-areas": "\"i n eye sw\" \"i l eye sw\""
+                              },
+                              {
+                                "grid-template-columns": "[[[ return (states['input_boolean.hub_show_hidden_scripts']||{}).state==='on' ? '40px 1fr 48px auto' : '40px 1fr 0px auto'; ]]]"
+                              },
+                              {
+                                "grid-template-rows": "auto auto"
+                              },
+                              {
+                                "column-gap": "16px"
+                              },
+                              {
+                                "align-items": "center"
+                              }
+                            ],
+                            "card": [
+                              {
+                                "padding": "8px 24px 8px 16px"
+                              },
+                              {
+                                "min-height": "72px"
+                              },
+                              {
+                                "background": "none"
+                              },
+                              {
+                                "box-shadow": "none"
+                              },
+                              {
+                                "border": "none"
+                              },
+                              {
+                                "border-radius": "0"
+                              },
+                              {
+                                "display": "[[[ const H=(((states['sensor.hub_hidden_items']||{}).attributes||{}).hidden)||{}; const s=(states['input_boolean.hub_show_hidden_scripts']||{}).state==='on'; return ((H['scripts']||[]).includes(entity.entity_id) && !s) ? 'none' : 'block'; ]]]"
+                              },
+                              {
+                                "opacity": "[[[ const H=(((states['sensor.hub_hidden_items']||{}).attributes||{}).hidden)||{}; return (H['scripts']||[]).includes(entity.entity_id) ? '0.38' : '1'; ]]]"
+                              }
+                            ],
+                            "icon": [
+                              {
+                                "width": "24px"
+                              },
+                              {
+                                "color": "var(--secondary-text-color)"
+                              }
+                            ],
+                            "name": [
+                              {
+                                "justify-self": "start"
+                              },
+                              {
+                                "text-align": "left"
+                              },
+                              {
+                                "white-space": "normal"
+                              },
+                              {
+                                "font-size": "16px"
+                              },
+                              {
+                                "line-height": "24px"
+                              },
+                              {
+                                "font-weight": "400"
+                              },
+                              {
+                                "color": "var(--primary-text-color)"
+                              }
+                            ],
+                            "label": [
+                              {
+                                "justify-self": "start"
+                              },
+                              {
+                                "text-align": "left"
+                              },
+                              {
+                                "font-size": "14px"
+                              },
+                              {
+                                "line-height": "20px"
+                              },
+                              {
+                                "color": "var(--secondary-text-color)"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ],
+                    "exclude": [
+                      {
+                        "label": "hub_ignore"
+                      }
+                    ]
+                  },
+                  "sort": {
+                    "method": "name"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "custom:expander-card",
+              "title-card": {
+                "type": "heading",
+                "heading": "Scenes",
+                "icon": "mdi:palette-outline",
+                "badges": [
+                  {
+                    "type": "entity",
+                    "entity": "input_boolean.hub_show_hidden_scenes",
+                    "show_state": false,
+                    "show_icon": true,
+                    "icon": "mdi:eye-off-outline",
+                    "tap_action": {
+                      "action": "toggle"
+                    },
+                    "visibility": [
+                      {
+                        "condition": "state",
+                        "entity": "input_boolean.hub_show_hidden_scenes",
+                        "state": "off"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "entity",
+                    "entity": "input_boolean.hub_show_hidden_scenes",
+                    "show_state": false,
+                    "show_icon": true,
+                    "icon": "mdi:eye",
+                    "color": "primary",
+                    "tap_action": {
+                      "action": "toggle"
+                    },
+                    "visibility": [
+                      {
+                        "condition": "state",
+                        "entity": "input_boolean.hub_show_hidden_scenes",
+                        "state": "on"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "title-card-clickable": false,
+              "icon": "mdi:chevron-down",
+              "expanded": true,
+              "storage-id": "hub_scenes",
+              "padding": "0",
+              "clear": true,
+              "grid_options": {
+                "columns": "full"
+              },
+              "cards": [
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "grid",
+                    "columns": 1,
+                    "square": false
+                  },
+                  "card_param": "cards",
+                  "filter": {
+                    "include": [
+                      {
+                        "domain": "scene",
+                        "options": {
+                          "type": "custom:button-card",
+                          "show_label": true,
+                          "triggers_update": [
+                            "sensor.hub_hidden_items",
+                            "input_boolean.hub_show_hidden_scenes"
+                          ],
+                          "icon": "mdi:palette-outline",
+                          "label": "[[[ const s = entity.state; const ok = s && !['unknown','unavailable'].includes(s); return 'Last activated: ' + (ok ? new Date(s).toLocaleString([], {weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'}) : 'Never'); ]]]",
+                          "custom_fields": {
+                            "eye": {
+                              "card": {
+                                "type": "custom:button-card",
+                                "variables": {
+                                  "eid": "this.entity_id"
+                                },
+                                "triggers_update": [
+                                  "sensor.hub_hidden_items",
+                                  "input_boolean.hub_show_hidden_scenes"
+                                ],
+                                "show_name": false,
+                                "icon": "[[[ const H=(((states['sensor.hub_hidden_items']||{}).attributes||{}).hidden)||{}; return (H['scenes']||[]).includes(variables.eid) ? 'mdi:eye-off' : 'mdi:eye-outline'; ]]]",
+                                "tap_action": {
+                                  "action": "perform-action",
+                                  "perform_action": "script.hub_toggle_hidden",
+                                  "data": {
+                                    "list": "scenes",
+                                    "entity_id": "this.entity_id"
+                                  }
+                                },
+                                "hold_action": {
+                                  "action": "none"
+                                },
+                                "styles": {
+                                  "card": [
+                                    {
+                                      "background": "none"
+                                    },
+                                    {
+                                      "box-shadow": "none"
+                                    },
+                                    {
+                                      "border": "none"
+                                    },
+                                    {
+                                      "padding": "12px"
+                                    },
+                                    {
+                                      "width": "48px"
+                                    },
+                                    {
+                                      "height": "48px"
+                                    },
+                                    {
+                                      "border-radius": "24px"
+                                    },
+                                    {
+                                      "display": "[[[ return (states['input_boolean.hub_show_hidden_scenes']||{}).state==='on' ? 'block' : 'none'; ]]]"
+                                    }
+                                  ],
+                                  "icon": [
+                                    {
+                                      "width": "24px"
+                                    },
+                                    {
+                                      "color": "var(--secondary-text-color)"
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            "sw": "<ha-icon icon=\"mdi:play-circle-outline\" style=\"--mdc-icon-size:32px;color:var(--primary-color)\"></ha-icon>"
+                          },
+                          "tap_action": {
+                            "action": "perform-action",
+                            "perform_action": "scene.turn_on",
+                            "target": {
+                              "entity_id": "entity"
+                            }
+                          },
+                          "hold_action": {
+                            "action": "more-info"
+                          },
+                          "styles": {
+                            "grid": [
+                              {
+                                "grid-template-areas": "\"i n eye sw\" \"i l eye sw\""
+                              },
+                              {
+                                "grid-template-columns": "[[[ return (states['input_boolean.hub_show_hidden_scenes']||{}).state==='on' ? '40px 1fr 48px auto' : '40px 1fr 0px auto'; ]]]"
+                              },
+                              {
+                                "grid-template-rows": "auto auto"
+                              },
+                              {
+                                "column-gap": "16px"
+                              },
+                              {
+                                "align-items": "center"
+                              }
+                            ],
+                            "card": [
+                              {
+                                "padding": "8px 24px 8px 16px"
+                              },
+                              {
+                                "min-height": "72px"
+                              },
+                              {
+                                "background": "none"
+                              },
+                              {
+                                "box-shadow": "none"
+                              },
+                              {
+                                "border": "none"
+                              },
+                              {
+                                "border-radius": "0"
+                              },
+                              {
+                                "display": "[[[ const H=(((states['sensor.hub_hidden_items']||{}).attributes||{}).hidden)||{}; const s=(states['input_boolean.hub_show_hidden_scenes']||{}).state==='on'; return ((H['scenes']||[]).includes(entity.entity_id) && !s) ? 'none' : 'block'; ]]]"
+                              },
+                              {
+                                "opacity": "[[[ const H=(((states['sensor.hub_hidden_items']||{}).attributes||{}).hidden)||{}; return (H['scenes']||[]).includes(entity.entity_id) ? '0.38' : '1'; ]]]"
+                              }
+                            ],
+                            "icon": [
+                              {
+                                "width": "24px"
+                              },
+                              {
+                                "color": "var(--secondary-text-color)"
+                              }
+                            ],
+                            "name": [
+                              {
+                                "justify-self": "start"
+                              },
+                              {
+                                "text-align": "left"
+                              },
+                              {
+                                "white-space": "normal"
+                              },
+                              {
+                                "font-size": "16px"
+                              },
+                              {
+                                "line-height": "24px"
+                              },
+                              {
+                                "font-weight": "400"
+                              },
+                              {
+                                "color": "var(--primary-text-color)"
+                              }
+                            ],
+                            "label": [
+                              {
+                                "justify-self": "start"
+                              },
+                              {
+                                "text-align": "left"
+                              },
+                              {
+                                "font-size": "14px"
+                              },
+                              {
+                                "line-height": "20px"
+                              },
+                              {
+                                "color": "var(--secondary-text-color)"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ],
+                    "exclude": [
+                      {
+                        "label": "hub_ignore"
+                      }
+                    ]
+                  },
+                  "sort": {
+                    "method": "name"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "System",
+      "path": "system",
+      "icon": "mdi:server-outline",
+      "type": "sections",
+      "max_columns": 3,
+      "sections": [
+        {
+          "type": "grid",
+          "cards": [
+            {
+              "type": "custom:expander-card",
+              "title-card": {
+                "type": "heading",
+                "heading": "Backups",
+                "icon": "mdi:backup-restore"
+              },
+              "title-card-clickable": true,
+              "icon": "mdi:chevron-down",
+              "expanded": true,
+              "storage-id": "hub_backups",
+              "padding": "0",
+              "clear": true,
+              "grid_options": {
+                "columns": "full"
+              },
+              "cards": [
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "grid",
+                    "columns": 1,
+                    "square": false
+                  },
+                  "card_param": "cards",
+                  "filter": {
+                    "include": [
+                      {
+                        "integration": "backup",
+                        "domain": "sensor",
+                        "options": {
+                          "type": "tile"
+                        }
+                      }
+                    ],
+                    "exclude": [
+                      {
+                        "label": "hub_ignore"
+                      }
+                    ]
+                  },
+                  "sort": {
+                    "method": "name"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "grid",
+          "cards": [
+            {
+              "type": "custom:expander-card",
+              "title-card": {
+                "type": "heading",
+                "heading": "Updates available",
+                "icon": "mdi:update"
+              },
+              "title-card-clickable": true,
+              "icon": "mdi:chevron-down",
+              "expanded": true,
+              "storage-id": "hub_updates",
+              "padding": "0",
+              "clear": true,
+              "grid_options": {
+                "columns": "full"
+              },
+              "cards": [
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "grid",
+                    "columns": 1,
+                    "square": false
+                  },
+                  "card_param": "cards",
+                  "filter": {
+                    "include": [
+                      {
+                        "domain": "update",
+                        "state": "on",
+                        "options": {
+                          "type": "tile",
+                          "features": [
+                            {
+                              "type": "update-actions"
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "exclude": [
+                      {
+                        "label": "hub_ignore"
+                      }
+                    ]
+                  },
+                  "sort": {
+                    "method": "name"
+                  },
+                  "else": {
+                    "type": "markdown",
+                    "content": "Everything is up to date."
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "grid",
+          "cards": [
+            {
+              "type": "custom:expander-card",
+              "title-card": {
+                "type": "heading",
+                "heading": "Unavailable entities",
+                "icon": "mdi:alert-circle-outline",
+                "badges": [
+                  {
+                    "type": "entity",
+                    "entity": "input_boolean.hub_show_hidden_unavailable",
+                    "show_state": false,
+                    "show_icon": true,
+                    "icon": "mdi:eye-off-outline",
+                    "tap_action": {
+                      "action": "toggle"
+                    },
+                    "visibility": [
+                      {
+                        "condition": "state",
+                        "entity": "input_boolean.hub_show_hidden_unavailable",
+                        "state": "off"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "entity",
+                    "entity": "input_boolean.hub_show_hidden_unavailable",
+                    "show_state": false,
+                    "show_icon": true,
+                    "icon": "mdi:eye",
+                    "color": "primary",
+                    "tap_action": {
+                      "action": "toggle"
+                    },
+                    "visibility": [
+                      {
+                        "condition": "state",
+                        "entity": "input_boolean.hub_show_hidden_unavailable",
+                        "state": "on"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "title-card-clickable": false,
+              "icon": "mdi:chevron-down",
+              "expanded": false,
+              "storage-id": "hub_unavailable",
+              "padding": "0",
+              "clear": true,
+              "grid_options": {
+                "columns": "full"
+              },
+              "cards": [
+                {
+                  "type": "custom:auto-entities",
+                  "card": {
+                    "type": "grid",
+                    "columns": 1,
+                    "square": false
+                  },
+                  "card_param": "cards",
+                  "filter": {
+                    "include": [
+                      {
+                        "state": "unavailable",
+                        "options": {
+                          "type": "custom:button-card",
+                          "show_label": true,
+                          "triggers_update": [
+                            "sensor.hub_hidden_items",
+                            "input_boolean.hub_show_hidden_unavailable"
+                          ],
+                          "label": "[[[ return entity.entity_id.split('.')[0] + ' · since ' + new Date(entity.last_changed).toLocaleString([], {weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'}); ]]]",
+                          "custom_fields": {
+                            "eye": {
+                              "card": {
+                                "type": "custom:button-card",
+                                "variables": {
+                                  "eid": "this.entity_id"
+                                },
+                                "triggers_update": [
+                                  "sensor.hub_hidden_items",
+                                  "input_boolean.hub_show_hidden_unavailable"
+                                ],
+                                "show_name": false,
+                                "icon": "[[[ const H=(((states['sensor.hub_hidden_items']||{}).attributes||{}).hidden)||{}; return (H['unavailable']||[]).includes(variables.eid) ? 'mdi:eye-off' : 'mdi:eye-outline'; ]]]",
+                                "tap_action": {
+                                  "action": "perform-action",
+                                  "perform_action": "script.hub_toggle_hidden",
+                                  "data": {
+                                    "list": "unavailable",
+                                    "entity_id": "this.entity_id"
+                                  }
+                                },
+                                "hold_action": {
+                                  "action": "none"
+                                },
+                                "styles": {
+                                  "card": [
+                                    {
+                                      "background": "none"
+                                    },
+                                    {
+                                      "box-shadow": "none"
+                                    },
+                                    {
+                                      "border": "none"
+                                    },
+                                    {
+                                      "padding": "12px"
+                                    },
+                                    {
+                                      "width": "48px"
+                                    },
+                                    {
+                                      "height": "48px"
+                                    },
+                                    {
+                                      "border-radius": "24px"
+                                    },
+                                    {
+                                      "display": "[[[ return (states['input_boolean.hub_show_hidden_unavailable']||{}).state==='on' ? 'block' : 'none'; ]]]"
+                                    }
+                                  ],
+                                  "icon": [
+                                    {
+                                      "width": "24px"
+                                    },
+                                    {
+                                      "color": "var(--secondary-text-color)"
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          },
+                          "tap_action": {
+                            "action": "more-info"
+                          },
+                          "hold_action": {
+                            "action": "more-info"
+                          },
+                          "styles": {
+                            "grid": [
+                              {
+                                "grid-template-areas": "\"i n eye\" \"i l eye\""
+                              },
+                              {
+                                "grid-template-columns": "[[[ return (states['input_boolean.hub_show_hidden_unavailable']||{}).state==='on' ? '40px 1fr 48px' : '40px 1fr 0px'; ]]]"
+                              },
+                              {
+                                "grid-template-rows": "auto auto"
+                              },
+                              {
+                                "column-gap": "16px"
+                              },
+                              {
+                                "align-items": "center"
+                              }
+                            ],
+                            "card": [
+                              {
+                                "padding": "8px 24px 8px 16px"
+                              },
+                              {
+                                "min-height": "72px"
+                              },
+                              {
+                                "background": "none"
+                              },
+                              {
+                                "box-shadow": "none"
+                              },
+                              {
+                                "border": "none"
+                              },
+                              {
+                                "border-radius": "0"
+                              },
+                              {
+                                "display": "[[[ const H=(((states['sensor.hub_hidden_items']||{}).attributes||{}).hidden)||{}; const s=(states['input_boolean.hub_show_hidden_unavailable']||{}).state==='on'; return ((H['unavailable']||[]).includes(entity.entity_id) && !s) ? 'none' : 'block'; ]]]"
+                              },
+                              {
+                                "opacity": "[[[ const H=(((states['sensor.hub_hidden_items']||{}).attributes||{}).hidden)||{}; return (H['unavailable']||[]).includes(entity.entity_id) ? '0.38' : '1'; ]]]"
+                              }
+                            ],
+                            "icon": [
+                              {
+                                "width": "24px"
+                              },
+                              {
+                                "color": "var(--secondary-text-color)"
+                              }
+                            ],
+                            "name": [
+                              {
+                                "justify-self": "start"
+                              },
+                              {
+                                "text-align": "left"
+                              },
+                              {
+                                "white-space": "normal"
+                              },
+                              {
+                                "font-size": "16px"
+                              },
+                              {
+                                "line-height": "24px"
+                              },
+                              {
+                                "font-weight": "400"
+                              },
+                              {
+                                "color": "var(--primary-text-color)"
+                              }
+                            ],
+                            "label": [
+                              {
+                                "justify-self": "start"
+                              },
+                              {
+                                "text-align": "left"
+                              },
+                              {
+                                "font-size": "14px"
+                              },
+                              {
+                                "line-height": "20px"
+                              },
+                              {
+                                "color": "var(--secondary-text-color)"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ],
+                    "exclude": [
+                      {
+                        "domain": "button"
+                      },
+                      {
+                        "entity_category": "diagnostic"
+                      },
+                      {
+                        "entity_category": "config"
+                      },
+                      {
+                        "label": "hub_ignore"
+                      }
+                    ]
+                  },
+                  "sort": {
+                    "method": "domain"
+                  },
+                  "else": {
+                    "type": "markdown",
+                    "content": "No unavailable entities."
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
