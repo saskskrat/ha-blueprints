@@ -1,0 +1,80 @@
+blueprint:
+  name: Daily Adaptive Lighting reset
+  description: >-
+    Once a day, hands your lights back to Adaptive Lighting. Clears the "manually
+    controlled" flag that a scene or manual change leaves behind, optionally turns
+    sleep mode off, then re-applies the adaptive colour and brightness to lights that
+    are already on. Lights that are off stay off, and pick up the standard colour
+    the next time they turn on.
+
+
+    Good after seasonal or party scenes, which otherwise leave the lights stuck on
+    their scene colours until someone resets them. Needs the Adaptive Lighting
+    custom integration (HACS).
+  domain: automation
+  source_url: https://github.com/saskskrat/ha-blueprints/blob/main/blueprints/automation/daily_adaptive_lighting_reset.yaml
+  input:
+    adaptive_switches:
+      name: Adaptive Lighting switches
+      description: >-
+        The main switch of each Adaptive Lighting group to reset (for example one
+        group per room).
+      selector:
+        entity:
+          domain: switch
+          integration: adaptive_lighting
+          multiple: true
+    sleep_mode_switches:
+      name: Sleep mode switches (optional)
+      description: >-
+        Sleep mode switches to turn off during the reset. Leave empty to leave
+        sleep mode alone. Sleep mode makes lights dim and warm, so a switch left on
+        by accident keeps "standard" colours looking dim.
+      default: []
+      selector:
+        entity:
+          domain: switch
+          integration: adaptive_lighting
+          multiple: true
+    reset_time:
+      name: Reset time
+      description: When to run the reset each day.
+      default: "03:00:00"
+      selector:
+        time: {}
+
+mode: single
+
+variables:
+  sleep_switches: !input sleep_mode_switches
+
+triggers:
+  - trigger: time
+    at: !input reset_time
+
+actions:
+  - alias: Turn sleep mode off, if any switches were chosen
+    if:
+      - condition: template
+        value_template: "{{ sleep_switches | length > 0 }}"
+    then:
+      - action: switch.turn_off
+        target:
+          entity_id: !input sleep_mode_switches
+
+  - alias: Reset each Adaptive Lighting group
+    repeat:
+      for_each: !input adaptive_switches
+      sequence:
+        - alias: Clear manual control so adaptation resumes
+          action: adaptive_lighting.set_manual_control
+          data:
+            entity_id: "{{ repeat.item }}"
+            manual_control: false
+        - alias: Re-apply standard colours to lights that are already on, without turning any on
+          action: adaptive_lighting.apply
+          data:
+            entity_id: "{{ repeat.item }}"
+            adapt_color: true
+            adapt_brightness: true
+            turn_on_lights: false
