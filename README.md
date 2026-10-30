@@ -1,62 +1,56 @@
-# Home Assistant Blueprints & Templates
+<div align="center">
 
-A general-purpose, ready-to-share library of Home Assistant automations, scripts,
-blueprints, packages, and dashboards. Everything here uses generic entity names
-(`light.example_room`, `person.example_person`, etc.) so you can drop a file in,
-swap the entity IDs for your own, and go — no personal data, area names, or
-device-specific quirks baked in.
+# 🏡 Home Assistant Blueprints & Templates
 
-## Why blueprints first
+### Generic, ready-to-share automations, scripts, blueprints, packages and dashboards.
 
-Where an automation is reusable across rooms/devices, it's written as a
-**blueprint** (`blueprints/automation/`) with `input:` fields, so you import it
-once via Settings → Automations → Blueprints → Import and reuse it everywhere
-instead of copy-pasting YAML. Plain automation/script YAML is for patterns that
-are useful to read/adapt but aren't generic enough to fully parameterize.
+![Home Assistant](https://img.shields.io/badge/Home%20Assistant-templates-41BDF5?logo=homeassistant&logoColor=white) ![License](https://img.shields.io/badge/License-MIT-27AE60) ![Personal data](https://img.shields.io/badge/Personal%20data-none-E74C3C) ![Entities](https://img.shields.io/badge/Entities-placeholders-8E44AD)
 
-## Structure
+</div>
+
+---
+
+## 🗺️ Pick your path
+
+| I want to… | Go to |
+|---|---|
+| ⚡ Reuse logic across rooms without copy-paste | [🧩 Blueprints](blueprints/README.md) |
+| 🤖 Read and adapt a ready-made automation | [🤖 Automations](automations/README.md) |
+| 📜 Grab a small reusable action | [📜 Scripts](scripts/README.md) |
+| 📦 Split my config into tidy per-feature files | [📦 Packages](packages/README.md) |
+| 📊 Build a dashboard | [📊 Dashboards](dashboards/README.md) |
+| 📚 Wire this repo into my config | [Getting started](docs/getting-started.md) |
+
+---
+
+## 🧭 How the pieces fit together
 
 ```
-automations/       Copy-and-adapt automation YAML, grouped by purpose
-  presence/         Arrivals, departures, "someone's home" logic
-  lighting/         Motion lighting, scenes, adaptive/circadian lighting
-  notifications/    Mobile/notify.* alerts
-  security/         Locks, alarms, cameras, unexpected-state alerts
-  climate/          HVAC setbacks, fan control
-  energy/           Standby power, high-usage alerts
-scripts/            Reusable scripts, same grouping as automations
-  lighting/
-  notifications/
-  maintenance/       Backup checks, update checks, housekeeping
-blueprints/
-  automation/         Reusable, parameterized automation blueprints (import via UI)
-packages/             Domain-scoped packages bundling helpers + automations + scripts
-                       — one file per subsystem, for splitting configuration.yaml
-dashboards/            Lovelace dashboard YAML (raw config, not UI-editor mode)
-docs/
-  getting-started.md      How to wire this repo into an existing HA config
-  naming-conventions.md   Suggested naming rules
-  contributing.md         How to add/improve a template
+blueprints/   reusable, parameterised automations (import from the UI)
+automations/  plain-YAML versions you can read and adapt
+scripts/      small actions the automations and dashboards call
+packages/     bundles of the above plus helpers, one file per feature
+dashboards/   starter layouts and generators that sit on top of all of it
+docs/         naming conventions, getting started, contributing
 ```
 
-## Quick start
+Every folder has a README written the same way: what is here, how to use it in a few steps, what to replace, and an honest status.
 
-1. Clone or download this repo.
-2. Import a blueprint directly: Settings → Automations & Scenes → Blueprints →
-   Import Blueprint → paste the raw GitHub URL of a file under `blueprints/automation/`.
-3. For plain automations/scripts/packages, copy the file into your own config,
-   replace the placeholder entity IDs (`light.example_*`, `person.example_person`,
-   `binary_sensor.example_motion`, etc.) with your real ones, and merge it in via
-   `!include_dir_merge_list` / `!include_dir_merge_named` (see `docs/getting-started.md`).
-4. Replace any hardcoded values that should be secret (tokens, lat/long, webhook
-   IDs) with `!secret <name>`.
+## 🚀 Quick start
 
-## License
+1. **Clone or download** this repo.
+2. **Blueprints:** Settings → Automations & scenes → Blueprints → Import, paste the raw URL of a file under `blueprints/automation/`.
+3. **Everything else:** copy the file, replace the `example_*` entity IDs with yours, then merge it in (see [getting started](docs/getting-started.md)).
+4. Keep secrets, coordinates and webhook IDs in `!secret`, never in a shared file.
 
-MIT — see `LICENSE`. Use, adapt, and share freely; attribution appreciated but
-not required.
+## 🔒 Privacy promise
 
-## Contributing
+All entity names here are placeholders (`light.example_room`, `person.example_person`). No names, addresses, coordinates, device IDs or tokens belong in this repo.
 
-PRs welcome — see `docs/contributing.md` for the shape a new template should take
-(placeholder entities, no personal data, a comment explaining the pattern).
+## 🌿 How changes land
+
+Every new template arrives on **its own branch** and is merged into `main` only after the maintainer has reviewed it. If you contribute, open a pull request from your own branch and leave the merge to the maintainer. More in [contributing](docs/contributing.md).
+
+## 📄 License
+
+MIT. See [`LICENSE`](LICENSE). Use, adapt and share freely; attribution is appreciated but not required.
